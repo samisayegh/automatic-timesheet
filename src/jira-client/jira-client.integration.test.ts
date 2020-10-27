@@ -15,7 +15,7 @@ it('#getIssuesInProgress returns a valid response with issues', async () => {
 })
 
 it('#getUsers return users', async () => {
-    const apiToken = 'dozjnowL7RTrlOPaqLvQDFFF';
+    const apiToken = '';
     const auth = Buffer.from(`fguerreiro@coveo.com:${apiToken}`).toString('base64');
     // const query = "assignee = 'Sami Sayegh' and status = 'in progress' order by created DESC";
     const headers = {
