@@ -33,6 +33,16 @@ describe('Jira Client', () => {
   })
 
   describe('#getUsers', () => {
+    function buildActiveUsers(num: number) {
+      const users: User[] = [];
+      
+      for (let i= 0; i < num; i++) {
+        users.push(buildMockUser({ active: true }))
+      }
+
+      return users;
+    }
+
     it('sends a get request with the correct params', async () => {
       const client = new JiraClient(axios);
       await client.getUsers()
@@ -43,7 +53,7 @@ describe('Jira Client', () => {
     });
 
     it('when there are fewer users than maxResults, it does not try to get more users', async () => {
-      const users = [buildMockUser()];
+      const users = buildActiveUsers(1);
       (axios.get as jest.Mock).mockReturnValue({data: users});
 
 
@@ -55,12 +65,7 @@ describe('Jira Client', () => {
     });
 
     it('when there are more users than maxResults, it tries to get more users', async () => {
-      const hundredUsers: User[] = [];
-      
-      for (let i= 0; i < 100; i++) {
-        hundredUsers.push(buildMockUser())
-      }
-
+      const hundredUsers = buildActiveUsers(100);
       (axios.get as jest.Mock).mockReturnValueOnce({data: hundredUsers});
 
       const client = new JiraClient(axios);
@@ -68,6 +73,31 @@ describe('Jira Client', () => {
 
       expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('startAt=0&maxResults=100'), expect.anything())
       expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('startAt=100&maxResults=100'), expect.anything())
+    });
+
+    it('when the first call yields 100 users, and the second yields 10, it returns 110 users', async () => {
+      const hundredUsers = buildActiveUsers(100);
+      const tenUsers = buildActiveUsers(10);
+
+      (axios.get as jest.Mock).mockReturnValueOnce({data: hundredUsers});
+      (axios.get as jest.Mock).mockReturnValueOnce({data: tenUsers});
+
+      const client = new JiraClient(axios);
+      const result = await client.getUsers()
+
+      expect(result.length).toBe(110);
+    });
+
+    it('when there is an active an inactive user, it returns just the active user', async() => {
+      const active = buildMockUser({ displayName: 'A', active: true});
+      const inactive = buildMockUser({ displayName: 'B', active: false});
+
+      (axios.get as jest.Mock).mockReturnValueOnce({data: [active, inactive]});
+
+      const client = new JiraClient(axios);
+      const result = await client.getUsers()
+
+      expect(result).toEqual([active]);
     })
   })
 })

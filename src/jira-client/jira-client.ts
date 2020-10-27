@@ -56,7 +56,7 @@ export class JiraClient {
       offset += maxResults;
     }
 
-    return users;
+    return users.filter(u => u.active);
   }
   
   public async getIssuesInProgress() {
