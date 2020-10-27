@@ -31,8 +31,6 @@ export class JiraClient {
     const jql = "assignee = currentUser() and status = 'in progress' order by created DESC";
     const url = `https://coveord.atlassian.net/rest/api/2/search?${startAt}&${maxResults}&${fields}&${jql}`;
   
-    const result = await this.http.get(url);
-    console.log(JSON.stringify(result));
     return await this.http.get(url);
   }
 }
@@ -44,3 +42,11 @@ function buildDateString(date: Date) {
 
   return `${year}-${month}-${day}T09:00:00.000+0000`
 }
+
+
+// Get all active users from paginated api
+
+// Improve authentication flow (extract the api key better and inject in the constructor)
+// Make getIssuesInProgress more flexible (receive user displayname as parameter)
+
+// Improve proof-of-work determination (someone may not have issues in progress)

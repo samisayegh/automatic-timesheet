@@ -1,7 +1,6 @@
 import axios from 'axios';
 import {JiraClient} from './jira-client';
 
-
 jest.mock('axios');
 
 describe('Jira Client', () => {
@@ -26,13 +25,4 @@ describe('Jira Client', () => {
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post).toHaveBeenCalledWith(url, data);
   })
-
-  // it('#getIssuesInProgress sends a request', async () => {
-  //   const client = new JiraClient(axios);
-
-  //   const result = await client.getIssuesInProgress();
-
-  //   console.log(JSON.stringify(result));
-  //   expect(axios.get).toHaveBeenCalledTimes(1);
-  // })
 })
