@@ -2,7 +2,6 @@ import { AxiosStatic } from 'axios';
 
 interface LogTimeProps {
   issueId: string;
-  workLogId: number;
   hours: number;
   utc: Date;
 }
@@ -11,9 +10,9 @@ export class JiraClient {
   constructor(private http: AxiosStatic) {}
 
   public async logTime(options: LogTimeProps) {
-    const {issueId, workLogId, hours, utc} = options;
+    const {issueId, hours, utc} = options;
     
-    const url = `https://coveord.atlassian.net/rest/api/2/issue/${issueId}/worklog?adjustEstimate=auto&_r=${workLogId}`
+    const url = `https://coveord.atlassian.net/rest/api/2/issue/${issueId}/worklog?adjustEstimate=auto`
 
     const data = {
       started: buildDateString(utc),
@@ -21,6 +20,20 @@ export class JiraClient {
     }
 
     await this.http.post(url, data);
+  }
+  
+  public async getIssuesInProgress() {
+    // /search?startAt=0&maxResults=100&fields=issuetype%2Cstatus%2Csummary&jql=assignee%20=%20currentUser()%20and%20status%20=%20%27in%20progress%27%20order%20by%20created%20DESC
+  
+    const startAt = 'startAt=0';
+    const maxResults = 'maxResults=100';
+    const fields = 'fields=issuetype,status,summary';
+    const jql = "assignee = currentUser() and status = 'in progress' order by created DESC";
+    const url = `https://coveord.atlassian.net/rest/api/2/search?${startAt}&${maxResults}&${fields}&${jql}`;
+  
+    const result = await this.http.get(url);
+    console.log(JSON.stringify(result));
+    return await this.http.get(url);
   }
 }
 
