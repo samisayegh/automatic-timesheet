@@ -1,4 +1,4 @@
-import { Delays, greeter } from '../src/main';
+import { Delays, greeter } from './main';
 
 describe('greeter function', () => {
   // Read more about fake timers
