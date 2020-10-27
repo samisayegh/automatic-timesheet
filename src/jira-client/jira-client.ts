@@ -6,6 +6,17 @@ interface LogTimeProps {
   utc: Date;
 }
 
+export interface User {
+  self: string;
+  accountId: string;
+  accountType: string;
+  emailAddress: string;
+  avatarUrls: Record<string, string>;
+  displayName: string;
+  active: boolean;
+  locale: string;
+}
+
 export class JiraClient {
   constructor(private http: AxiosStatic) {}
 
@@ -21,6 +32,32 @@ export class JiraClient {
 
     await this.http.post(url, data);
   }
+
+  public async getUsers() {
+    let offset = 0;
+    const maxResults = 100;
+
+    let users: User[] = [];
+
+    while(true) {
+      const response = await this.getUsersPaginated(offset, maxResults);
+      const data = response?.data;
+
+      if (!data) {
+        break;
+      }
+
+      users = users.concat(data);
+
+      if (data.length !== maxResults) {
+        break;
+      }
+      
+      offset += maxResults;
+    }
+
+    return users;
+  }
   
   public async getIssuesInProgress() {
     // /search?startAt=0&maxResults=100&fields=issuetype%2Cstatus%2Csummary&jql=assignee%20=%20currentUser()%20and%20status%20=%20%27in%20progress%27%20order%20by%20created%20DESC
@@ -32,6 +69,19 @@ export class JiraClient {
     const url = `https://coveord.atlassian.net/rest/api/2/search?${startAt}&${maxResults}&${fields}&${jql}`;
   
     return await this.http.get(url);
+  }
+
+  private getHeaders() {
+    const auth = Buffer.from('email@example.com:<api_token>').toString('base64');
+    return {
+      'Authorization': `Basic ${auth}`,
+      'Accept': 'application/json'
+    }
+  }
+
+  private async getUsersPaginated(offset: number, maxResults: number) {
+    const headers = this.getHeaders();
+    return await this.http.get<User[]>(`https://coveord.atlassian.net/rest/api/3/users?startAt=${offset}&maxResults=${maxResults}`, {headers})
   }
 }
 

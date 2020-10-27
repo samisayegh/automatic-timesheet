@@ -1,9 +1,15 @@
 import axios from 'axios';
-import {JiraClient} from './jira-client';
+import { buildMockUser } from '../mocks/mock-user';
+import {JiraClient, User} from './jira-client';
 
 jest.mock('axios');
 
 describe('Jira Client', () => {
+  beforeEach(() => {
+    (axios.get as jest.Mock).mockReset();
+    (axios.post as jest.Mock).mockReset();
+  })
+
   it('#logTime sends a request with the correct params', async () => {
     const client = new JiraClient(axios);
     
@@ -24,5 +30,44 @@ describe('Jira Client', () => {
 
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post).toHaveBeenCalledWith(url, data);
+  })
+
+  describe('#getUsers', () => {
+    it('sends a get request with the correct params', async () => {
+      const client = new JiraClient(axios);
+      await client.getUsers()
+
+      const url = 'https://coveord.atlassian.net/rest/api/3/users?startAt=0&maxResults=100';
+      
+      expect(axios.get).toHaveBeenCalledWith(url, expect.anything())
+    });
+
+    it('when there are fewer users than maxResults, it does not try to get more users', async () => {
+      const users = [buildMockUser()];
+      (axios.get as jest.Mock).mockReturnValue({data: users});
+
+
+      const client = new JiraClient(axios);
+      const result = await client.getUsers()
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(users);
+    });
+
+    it('when there are more users than maxResults, it tries to get more users', async () => {
+      const hundredUsers: User[] = [];
+      
+      for (let i= 0; i < 100; i++) {
+        hundredUsers.push(buildMockUser())
+      }
+
+      (axios.get as jest.Mock).mockReturnValueOnce({data: hundredUsers});
+
+      const client = new JiraClient(axios);
+      await client.getUsers()
+
+      expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('startAt=0&maxResults=100'), expect.anything())
+      expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('startAt=100&maxResults=100'), expect.anything())
+    })
   })
 })
