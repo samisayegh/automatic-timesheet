@@ -11,9 +11,9 @@ export class LogCalculator {
      */
     public calculateFromCommits(logDate: Date, commitsForIssues: CommitsForIssue[]) : LogTimeInfo { 
 
-        var logDateToCompare = logDate.toDateString();
+        const logDateToCompare = logDate.toDateString();
 
-        var listLog: string[] = [];
+        const listLog: string[] = [];
         
         // iterate through commits in CommitInfo[]
         // for each commit c in CommitInfo
@@ -22,7 +22,7 @@ export class LogCalculator {
             const jiraKey = commitInfo.issueKey;
             
             commitInfo.commits.forEach(commit => {
-                var dateOfCommit = new Date(commit.timestamp).toDateString();
+                const dateOfCommit = new Date(commit.timestamp).toDateString();
                 console.log('date ofcommit: ' + dateOfCommit);
                 console.log('date of logDateToCompare = ' + logDateToCompare)
                 if(logDateToCompare === dateOfCommit) {
@@ -35,7 +35,7 @@ export class LogCalculator {
         });
 
         // Calculate all records in ListLog, take the first two, and divide time of 8.
-        var logCommands: LogCommand[] = [];
+        const logCommands: LogCommand[] = [];
 
         if(listLog.length === 0) {
             return {
@@ -45,7 +45,7 @@ export class LogCalculator {
         }
 
         if(listLog.length === 1) {
-            var singleLogCommand: LogCommand = {
+            const singleLogCommand: LogCommand = {
                 issueKey: listLog[0],
                 logTime: TimeToLog.eight
              };

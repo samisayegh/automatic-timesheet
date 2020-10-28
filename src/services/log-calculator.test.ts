@@ -19,7 +19,7 @@ describe('log calculator', () => {
         timestamp: `${dateOfCommitText}T00:12:38Z`
     }
 
-    var commitsForIssue: CommitsForIssue = {
+    const commitsForIssue: CommitsForIssue = {
         commits: [commit1],
         issueKey: 'SFCT-4242'
     }
