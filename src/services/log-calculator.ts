@@ -86,6 +86,16 @@ export class LogCalculator {
     // @ts-ignore
     public calculateFromCommitsRetroactive(logDates: Date[], commitsForIssues: CommitsForIssue[]) : LogTimeInfo[] {
 
+        // todo: validate Dates input, should no be duplicate!
+
         // should iterate the dates and call the `calculateFromCommits` to get all the LogTimeInfos
+        const result: LogTimeInfo[] = [];
+
+        [...new Set(logDates)].forEach(dateToLog => {
+            const logTimeInfo: LogTimeInfo = this.calculateFromCommits(dateToLog, commitsForIssues);
+            result.push(logTimeInfo);
+        });
+
+        return result; 
     }
 }

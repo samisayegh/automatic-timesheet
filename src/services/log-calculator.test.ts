@@ -137,7 +137,47 @@ describe('log calculator', () => {
     expect(result).toBeDefined();
     expect(result.logCommands).toHaveLength(0);
   })
-  // todo: should produce two log commands with separate issues
-  // should produce 2 log commands for the same day
-  // should not produce log commands outside the date range
+
+  it('#calculateFromCommitsRetroactive should produce logcommands for two given dates when commits correspond the dates', () => {
+    const expectedIssueKey1 = 'SFCT-4242';
+    const expectedIssueKey2 = 'SFCT-4343';
+    const date1 = '2020-01-01';
+    const date2 = '2020-01-02';
+    const dates = [new Date(date1), new Date(date2)];
+
+    const commit1 = {
+        id: '122',
+        author: {
+            name: 'fguerreiro'
+        },
+        timestamp: `${date1}T01:12:38Z`
+    }
+
+    const commit2 = {
+        id: '1234',
+        author: {
+            name: 'fguerreiro'
+        },
+        timestamp: `${date2}T02:12:38Z`
+    }
+
+    const commitsForIssue1: CommitsForIssue = {
+        commits: [commit1],
+        issueKey: expectedIssueKey1
+    }
+
+    const commitsForIssue2: CommitsForIssue = {
+        commits: [commit2],
+        issueKey: expectedIssueKey2
+    }
+
+    const result = logCalculator.calculateFromCommitsRetroactive(dates, [commitsForIssue1, commitsForIssue2]);
+
+    expect(result).toBeDefined();
+    expect(result).toHaveLength(2);
+    expect(result[0].logCommands).toHaveLength(1);
+    expect(result[0].logCommands[0].issueKey).toBe(expectedIssueKey1);
+    expect(result[1].logCommands).toHaveLength(1);
+    expect(result[1].logCommands[0].issueKey).toBe(expectedIssueKey2);
+  })
 });
