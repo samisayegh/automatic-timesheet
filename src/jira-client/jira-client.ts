@@ -199,11 +199,7 @@ function buildDateTimeString(date: Date) {
 }
 
 function buildYearMonthDayString(date: Date) {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate() + 1;
-
-  return `${year}-${month}-${day}`;
+  return dayjs(date).format('YYYY-MM-DD');
 }
 
 

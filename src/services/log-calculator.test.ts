@@ -1,6 +1,5 @@
 import { LogCalculator } from "./log-calculator";
 import { Commit } from "../jira-client/jira-client"
-// import { formatDate } from "../utils"
 import { CommitsForIssue } from '../models/timesheet-models';
 
 describe('log calculator', () => {

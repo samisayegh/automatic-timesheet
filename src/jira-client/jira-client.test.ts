@@ -2,6 +2,7 @@ import axios from 'axios';
 import { buildMockUser } from '../mocks/mock-user';
 import { JiraCredentialsResolver } from '../security/jira-credentials-resolver';
 import { JiraClient, User } from './jira-client';
+import * as dayjs from 'dayjs';
 
 jest.mock('axios');
 
@@ -20,8 +21,8 @@ describe('Jira Client', () => {
 
     const from = '2020-10-25';
     const to = '2020-10-26';
-    const start = new Date(from);
-    const end = new Date(to);
+    const start = dayjs(from).toDate();
+    const end = dayjs(to).toDate();
 
     await client.getIssuesWithWorkLogs(start, end);
     const any = expect.anything();
@@ -36,7 +37,7 @@ describe('Jira Client', () => {
   it('#logTime sends a request with the correct params', async () => {
     const client = buildClient();
     
-    const october27th = new Date('2020-10-27')
+    const october27th = dayjs('2020-10-27').toDate();
     
     await client.logTime({
       issueKey: 'KIT-123',
@@ -57,7 +58,7 @@ describe('Jira Client', () => {
   it('#getIssuesInProgress sends a request with correct params', async () => {
     const client = buildClient()
 
-    await client.getIssuesInProgress(new Date('2020-10-15'), new Date('2020-10-20'));
+    await client.getIssuesInProgress(dayjs('2020-10-15').toDate(), dayjs('2020-10-20').toDate());
 
     expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('Updated >= "2020-10-15 00:00"'), expect.anything())
     expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('Updated <= "2020-10-27 23:59"'), expect.anything())

@@ -32,8 +32,6 @@ async function main() {
   });
   
   const calculator = new LogCalculator();
-
-  // console.log('start:', start, 'startDate', startDate.toDateString());
   const plan = calculator.calculateFromCommits(startDate, commitsForIssues);
   
   await executeLoggingPlan(plan, jiraClient);
