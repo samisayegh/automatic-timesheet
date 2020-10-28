@@ -32,7 +32,25 @@ describe('log calculator', () => {
     // expect(result.dateToLog.getMonth()).toBe(monthExpected);
   })
 
-//   it('#calculateFromCommits', () => {
+  it('#calculateFromCommits should have proper Issue key Id', () => {
+    const logCalculator = new LogCalculator();
+    const dateOfCommitText = '2020-10-21';
+    const expectedIssueKey = 'SFCT-4242';
+    const commit1: Commit = {
+        id: '123',
+        author: {
+            name: 'fguerreiro'
+        },
+        timestamp: `${dateOfCommitText}T00:12:38Z`
+    }
 
-//   })
+    const commitsForIssue: CommitsForIssue = {
+        commits: [commit1],
+        issueKey: expectedIssueKey
+    }
+    const result = logCalculator.calculateFromCommits(new Date(dateOfCommitText), [commitsForIssue]);
+
+    expect(result).toBeDefined();
+    expect(result.logCommands[0].issueKey).toBe(expectedIssueKey);
+  })
 });
