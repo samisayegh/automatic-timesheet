@@ -2,18 +2,21 @@ import axios from 'axios';
 import { buildMockUser } from '../mocks/mock-user';
 import { JiraCredentialsResolver } from '../security/jira-credentials-resolver';
 import { JiraClient, User } from './jira-client';
-import { CredentialsResolver } from '../composition-root'
 
 jest.mock('axios');
 
 describe('Jira Client', () => {
+  function buildClient() {
+    return new JiraClient(axios, new JiraCredentialsResolver());
+  }
+  
   beforeEach(() => {
     (axios.get as jest.Mock).mockReset();
     (axios.post as jest.Mock).mockReset();
   })
 
   it('#logTime sends a request with the correct params', async () => {
-    const client = new JiraClient(axios, CredentialsResolver);
+    const client = buildClient();
     
     const october27th = new Date()
     october27th.setUTCFullYear(2020, 10, 27);
@@ -35,7 +38,7 @@ describe('Jira Client', () => {
   })
 
   it('getDevDetailsForIssue sends a request with the correct params', async () => {
-    const client = new JiraClient(axios);
+    const client = buildClient();
     await client.getDevDetailsForIssue('1');
 
     const data = {
@@ -61,7 +64,7 @@ describe('Jira Client', () => {
     }
 
     it('sends a get request with the correct params', async () => {
-      const client = new JiraClient(axios, CredentialsResolver);
+      const client = buildClient();
       await client.getUsers()
 
       const url = 'https://coveord.atlassian.net/rest/api/3/users?startAt=0&maxResults=100';
@@ -74,7 +77,7 @@ describe('Jira Client', () => {
       (axios.get as jest.Mock).mockReturnValue({data: users});
 
 
-      const client = new JiraClient(axios, CredentialsResolver);
+      const client = buildClient();
       const result = await client.getUsers()
 
       expect(axios.get).toHaveBeenCalledTimes(1);
@@ -85,7 +88,7 @@ describe('Jira Client', () => {
       const hundredUsers = buildActiveUsers(100);
       (axios.get as jest.Mock).mockReturnValueOnce({data: hundredUsers});
 
-      const client = new JiraClient(axios, CredentialsResolver);
+      const client = buildClient();
       await client.getUsers()
 
       expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('startAt=0&maxResults=100'), expect.anything())
@@ -99,7 +102,7 @@ describe('Jira Client', () => {
       (axios.get as jest.Mock).mockReturnValueOnce({data: hundredUsers});
       (axios.get as jest.Mock).mockReturnValueOnce({data: tenUsers});
 
-      const client = new JiraClient(axios);
+      const client = buildClient();
       const result = await client.getUsers()
 
       expect(result.length).toBe(110);
@@ -111,7 +114,7 @@ describe('Jira Client', () => {
 
       (axios.get as jest.Mock).mockReturnValueOnce({data: [active, inactive]});
 
-      const client = new JiraClient(axios);
+      const client = buildClient();
       const result = await client.getUsers()
 
       expect(result).toEqual([active]);
