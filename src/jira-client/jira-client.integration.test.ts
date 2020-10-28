@@ -19,3 +19,14 @@ it('#getIssuesInProgress returns a valid response with issues', async () => {
 
   expect(result.data.issues.length).not.toBe(0);
 })
+
+// it('#logTime returns undefined', async () => {
+//   const client = new JiraClient(axios, new JiraCredentialsResolver());
+//   const result = await client.logTime({
+//     hours: 3,
+//     issueKey: 'KIT-215',
+//     utc: new Date('2020-10-28')
+//   });
+
+//   expect(result).toBe(undefined);
+// })
