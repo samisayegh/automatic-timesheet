@@ -25,14 +25,19 @@ export class LogCalculator {
                 const dateOfCommit = new Date(commit.timestamp).toDateString();
                 console.log('date ofcommit: ' + dateOfCommit);
                 console.log('date of logDateToCompare = ' + logDateToCompare)
-                if(logDateToCompare === dateOfCommit) {
+                if(logDateToCompare === dateOfCommit && !listLog.includes(jiraKey)) {
                     listLog.push(jiraKey);
-                    console.log('ARE EQUAL');
+                    console.log('Adding to listLog');
                 } else {
-                    console.log('ARE DIFFERENT')
+                    if(listLog.includes(jiraKey)) {
+                        console.log('issue key is already inclued :' + jiraKey);
+                    } else {
+                        console.log('ARE DIFFERENT');
+                    }
                 }
             });
         });
+        const uniqueIssueKeys = [...new Set(listLog)];
 
         // Calculate all records in ListLog, take the first two, and divide time of 8.
         const logCommands: LogCommand[] = [];
@@ -44,13 +49,33 @@ export class LogCalculator {
             };
         }
 
-        if(listLog.length === 1) {
+        // todo: clean up listLog for single values
+
+        if(uniqueIssueKeys.length === 1) {
             const singleLogCommand: LogCommand = {
-                issueKey: listLog[0],
+                issueKey: uniqueIssueKeys[0],
                 logTime: TimeToLog.eight
              };
 
             logCommands.push(singleLogCommand);
+        } else if (uniqueIssueKeys.length >= 2) {
+            const firstIssue: LogCommand = {
+                issueKey: uniqueIssueKeys[0],
+                logTime: TimeToLog.four
+             };
+
+            logCommands.push(firstIssue);
+
+            const secondIssue: LogCommand = {
+                issueKey: listLog[1],
+                logTime: TimeToLog.four
+             };
+             logCommands.push(secondIssue);
+
+            if (uniqueIssueKeys.length > 2) {
+                console.log("Detected more than two issues, but only the first two are being logged.");
+                // todo: log discarded issues for user information.
+            }
         }
 
         const result: LogTimeInfo = {
