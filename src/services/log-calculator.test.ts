@@ -19,7 +19,6 @@ describe('log calculator', () => {
         },
         timestamp: `${dateOfCommitText}T00:12:38Z`
     }
-
   })
 
   it('#calculateFromCommits should produce a logCommand', () => {
@@ -31,21 +30,10 @@ describe('log calculator', () => {
 
     expect(result).toBeDefined();
     expect(result.logCommands).toHaveLength(1);
-    // expect(formatDate(result.dateToLog)).toBe(dateOfCommitText);
-    
-    // expect(result.dateToLog.getMonth()).toBe(monthExpected);
   })
 
   it('#calculateFromCommits should have proper Issue key Id', () => {
     const expectedIssueKey = 'SFCT-4242';
-    const commit1: Commit = {
-        id: '123',
-        author: {
-            name: 'fguerreiro'
-        },
-        timestamp: `${dateOfCommitText}T00:12:38Z`
-    }
-
     const commitsForIssue: CommitsForIssue = {
         commits: [commit1],
         issueKey: expectedIssueKey
