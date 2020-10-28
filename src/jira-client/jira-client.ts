@@ -159,17 +159,17 @@ export class JiraClient {
   }
   
   public async getIssuesInProgress(from: Date, to: Date) {
-    const startAt = 'startAt=0';
-    const maxResults = 'maxResults=100';
-    const fields = 'fields=issuetype,status,summary';
-
+    const startAt = '0';
+    const maxResults = '100';
+    
     const start = buildYearMonthDayString(from);
     const end = buildYearMonthDayString(to);
     const jql = `assignee = currentUser() and development[commits].all > 0 and Updated >= "${start} 00:00" and Updated <= "${end} 23:59"`;
     
-    const url = `https://coveord.atlassian.net/rest/api/2/search?${startAt}&${maxResults}&${fields}&${jql}`;
-    
-    return await this.http.get<UserIssueResponse>(url);
+    const url = `https://coveord.atlassian.net/rest/api/2/search?startAt=${startAt}&maxResults=${maxResults}&jql=${jql}`;
+    const headers = this.getHeaders();
+
+    return await this.http.get<UserIssueResponse>(url, {headers});
   }
 
   private getHeaders() {
