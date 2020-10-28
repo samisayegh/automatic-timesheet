@@ -5,34 +5,21 @@ export class LogCalculator {
 
     private getUniqueIssueKeysForCurrentDate(logDate: Date, commitsForIssues: CommitsForIssue[]) {
         const logDateToCompare = logDate.toDateString();
-
         const listLog: string[] = [];
-        
-        // iterate through commits in CommitInfo[]
-        // for each commit c in CommitInfo
-        // if it is in dateToLog, add to ListLog.
+
         commitsForIssues.forEach(commitInfo => {
             const jiraKey = commitInfo.issueKey;
             
             commitInfo.commits.forEach(commit => {
                 const dateOfCommit = new Date(commit.timestamp).toDateString();
-                console.log('date ofcommit: ' + dateOfCommit);
-                console.log('date of logDateToCompare = ' + logDateToCompare)
-                if(logDateToCompare === dateOfCommit && !listLog.includes(jiraKey)) {
+                
+                if(logDateToCompare === dateOfCommit) {
                     listLog.push(jiraKey);
-                    console.log('Adding to listLog');
-                } else {
-                    if(listLog.includes(jiraKey)) {
-                        console.log('issue key is already inclued :' + jiraKey);
-                    } else {
-                        console.log('ARE DIFFERENT');
-                    }
                 }
             });
         });
 
         const uniqueIssueKeys = [...new Set(listLog)];
-
         return uniqueIssueKeys;
     }
     
