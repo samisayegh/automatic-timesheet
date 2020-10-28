@@ -2,15 +2,8 @@
 import { LogTimeInfo, LogCommand, CommitsForIssue, TimeToLog } from '../models/timesheet-models'
 
 export class LogCalculator {
-    
-    /**
-     * calculateFromCommits
-     * This is the method covers the use-case of a single date
-     * Input: the date to log and commits relative to this day
-     * Output: the logTimeInfo
-     */
-    public calculateFromCommits(logDate: Date, commitsForIssues: CommitsForIssue[]) : LogTimeInfo { 
 
+    private getUniqueIssueKeysForCurrentDate(logDate: Date, commitsForIssues: CommitsForIssue[]) {
         const logDateToCompare = logDate.toDateString();
 
         const listLog: string[] = [];
@@ -37,19 +30,30 @@ export class LogCalculator {
                 }
             });
         });
+
         const uniqueIssueKeys = [...new Set(listLog)];
 
-        // Calculate all records in ListLog, take the first two, and divide time of 8.
+        return uniqueIssueKeys;
+    }
+    
+    /**
+     * calculateFromCommits
+     * This is the method covers the use-case of a single date
+     * Input: the date to log and commits relative to this day
+     * Output: the logTimeInfo
+     */
+    public calculateFromCommits(logDate: Date, commitsForIssues: CommitsForIssue[]) : LogTimeInfo { 
+
+        const uniqueIssueKeys = this.getUniqueIssueKeysForCurrentDate(logDate, commitsForIssues);
+
         const logCommands: LogCommand[] = [];
 
-        if(listLog.length === 0) {
+        if(uniqueIssueKeys.length === 0) {
             return {
                 dateToLog: new Date(),
                 logCommands: []
             };
         }
-
-        // todo: clean up listLog for single values
 
         if(uniqueIssueKeys.length === 1) {
             const singleLogCommand: LogCommand = {
@@ -67,7 +71,7 @@ export class LogCalculator {
             logCommands.push(firstIssue);
 
             const secondIssue: LogCommand = {
-                issueKey: listLog[1],
+                issueKey: uniqueIssueKeys[1],
                 logTime: TimeToLog.four
              };
              logCommands.push(secondIssue);
