@@ -19,6 +19,7 @@ enum TimeToLog {
 /**
  *  
  */
+// @ts-ignore
 function calculateFromCommits(logDate: Date, commitInfos: CommitInfo[]) : LogCommand[] { 
 
     // iterate through commits in CommitInfo[]
