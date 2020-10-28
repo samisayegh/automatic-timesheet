@@ -1,10 +1,12 @@
+import { Commit } from '../jira-client/jira-client'
+
 export interface LogCommand {
     issueKey: string,
     logTime: TimeToLog
 }
 
 // Enum to restrict business rule by type: should be either four or eight hours, nothing outside of that.
-enum TimeToLog {
+export enum TimeToLog {
     four,
     eight
 }
@@ -15,4 +17,8 @@ export interface LogTimeInfo {
     logCommands: LogCommand[]
 }
 
+export interface CommitsForIssue {
+    issueKey: string,
+    commits: Commit[]
+}
 // Todo: move other models here!

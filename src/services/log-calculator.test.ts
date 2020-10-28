@@ -1,6 +1,7 @@
 import { LogCalculator } from "./log-calculator";
 import { Commit } from "../jira-client/jira-client"
-import { formatDate } from "../utils"
+// import { formatDate } from "../utils"
+import { CommitsForIssue } from '../models/timesheet-models';
 
 describe('log calculator', () => {
   it('asserts correctly', () => {
@@ -15,15 +16,19 @@ describe('log calculator', () => {
         author: {
             name: 'fguerreiro'
         },
-        timestamp: `${dateOfCommitText}T19:12:38Z`
+        timestamp: `${dateOfCommitText}T00:12:38Z`
     }
 
-    const result = logCalculator.calculateFromCommits(new Date(dateOfCommitText), [commit1]);
-
-    console.log('result datelog: ' + formatDate(result.dateToLog));
+    const commitsForIssue: CommitsForIssue = {
+        commits: [commit1],
+        issueKey: 'SFCT-4242'
+    }
+    const result = logCalculator.calculateFromCommits(new Date(dateOfCommitText), [commitsForIssue]);
 
     expect(result).toBeDefined();
-    expect(formatDate(result.dateToLog)).toBe(dateOfCommitText);
+    expect(result.logCommands).toHaveLength(1);
+    // expect(formatDate(result.dateToLog)).toBe(dateOfCommitText);
+    
     // expect(result.dateToLog.getMonth()).toBe(monthExpected);
   })
 });
