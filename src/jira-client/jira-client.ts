@@ -42,8 +42,46 @@ interface Commit {
   }
 }
 
+interface IssuesWithWorklogsResponse {
+  total: number;
+  issues: Issue[];
+}
+
+interface Issue {
+  id: string;
+  key: string;
+  fields: {
+    worklog: {
+      worklogs: Worklog[];
+    }
+  }
+}
+
+interface Worklog {
+  started: string;
+  timeSpentSeconds: number;
+  id: string;
+  issueId: string;
+}
+
 export class JiraClient {
   constructor(private http: AxiosStatic, private credentialsResolver: ICredentialsResolver) {}
+  
+  public async getIssuesWithWorkLogs(displayName: string, from: Date, to: Date) {
+    const startAt = '0';
+    const maxResults = '1000';
+    const fields = 'worklog';
+
+    const start = buildYearMonthDayString(from);
+    const end = buildYearMonthDayString(to);
+    const jql = `worklogDate >= "${start}" and worklogDate < "${end}" and worklogAuthor in ("${displayName}")`;
+    
+    const url = `https://coveord.atlassian.net/rest/api/2/search?fields=${fields}&maxResults=${maxResults}&jql=${jql}&startAt=${startAt}`;
+    const headers = this.getHeaders();
+    const res = await this.http.get<IssuesWithWorklogsResponse>(url, {headers});
+
+    return res?.data;
+  }
 
   public async logTime(options: LogTimeProps) {
     const {issueId, hours, utc} = options;
@@ -51,7 +89,7 @@ export class JiraClient {
     const url = `https://coveord.atlassian.net/rest/api/2/issue/${issueId}/worklog?adjustEstimate=auto`
 
     const data = {
-      started: buildDateString(utc),
+      started: buildDateTimeString(utc),
       timeSpent: `${hours}h`
     }
 
@@ -141,12 +179,17 @@ export class JiraClient {
   }
 }
 
-function buildDateString(date: Date) {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
+function buildDateTimeString(date: Date) {
+  const ymd = buildYearMonthDayString(date);
+  return `${ymd}T09:00:00.000+0000`;
+}
 
-  return `${year}-${month}-${day}T09:00:00.000+0000`
+function buildYearMonthDayString(date: Date) {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate() + 1;
+
+  return `${year}-${month}-${day}`;
 }
 
 

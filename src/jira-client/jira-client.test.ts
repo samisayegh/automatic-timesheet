@@ -15,11 +15,29 @@ describe('Jira Client', () => {
     (axios.post as jest.Mock).mockReset();
   })
 
+  it('#getIssuesWithWorkLogs sends a request with the correct params', async () => {
+    const client = buildClient();
+
+    const user = 'User A';
+    const from = '2020-10-25';
+    const to = '2020-10-26';
+    const start = new Date(from);
+    const end = new Date(to);
+
+    await client.getIssuesWithWorkLogs(user, start, end);
+    const any = expect.anything();
+
+    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('https://coveord.atlassian.net/rest/api/2/search'), any);
+    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('fields=worklog'), any);
+    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('maxResults=1000'), any);
+    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining(`worklogDate >= "${from}" and worklogDate < "${to}"`), any);
+    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining(`worklogAuthor in ("${user}")`), any)
+  })
+
   it('#logTime sends a request with the correct params', async () => {
     const client = buildClient();
     
-    const october27th = new Date()
-    october27th.setUTCFullYear(2020, 10, 27);
+    const october27th = new Date('2020-10-27')
     
     await client.logTime({
       issueId: 'KIT-123',
