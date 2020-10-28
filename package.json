@@ -32,6 +32,7 @@
   "author": "Jakub Synowiec <github@jakubsynowiec.info>",
   "license": "Apache-2.0",
   "dependencies": {
+    "dayjs": "^1.9.4",
     "tslib": "~2.0.1"
   },
   "volta": {

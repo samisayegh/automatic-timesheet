@@ -1,5 +1,6 @@
 import { AxiosStatic } from 'axios';
 import { ICredentialsResolver } from '../security/jira-credentials-resolver'
+import * as dayjs from 'dayjs';
 
 interface LogTimeProps {
   issueKey: string;
@@ -163,7 +164,9 @@ export class JiraClient {
     const maxResults = '100';
     
     const start = buildYearMonthDayString(from);
-    const end = buildYearMonthDayString(to);
+    const adjustedTo = dayjs(to).add(7, 'day').toDate(); // look at future updated issues to determine past commits.
+    const end = buildYearMonthDayString(adjustedTo);
+
     const jql = `assignee = currentUser() and development[commits].all > 0 and Updated >= "${start} 00:00" and Updated <= "${end} 23:59"`;
     
     const url = `https://coveord.atlassian.net/rest/api/2/search?startAt=${startAt}&maxResults=${maxResults}&jql=${jql}`;

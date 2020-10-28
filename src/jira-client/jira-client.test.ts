@@ -29,7 +29,7 @@ describe('Jira Client', () => {
     expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('https://coveord.atlassian.net/rest/api/2/search'), any);
     expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('fields=worklog'), any);
     expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('maxResults=1000'), any);
-    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining(`worklogDate >= "${from}" and worklogDate < "${to}"`), any);
+    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining(`worklogDate >= "${from}" and worklogDate <= "${to}"`), any);
     expect(axios.get).toHaveBeenCalledWith(expect.stringContaining(`worklogAuthor in (currentUser())`), any)
   })
 
@@ -52,6 +52,15 @@ describe('Jira Client', () => {
 
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post).toHaveBeenCalledWith(url, data, expect.anything());
+  })
+
+  it('#getIssuesInProgress sends a request with correct params', async () => {
+    const client = buildClient()
+
+    await client.getIssuesInProgress(new Date('2020-10-15'), new Date('2020-10-20'));
+
+    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('Updated >= "2020-10-15 00:00"'), expect.anything())
+    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('Updated <= "2020-10-27 23:59"'), expect.anything())
   })
 
   it('getDevDetailsForIssue sends a request with the correct params', async () => {
