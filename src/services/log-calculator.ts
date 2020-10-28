@@ -1,5 +1,4 @@
 import { Commit } from '../jira-client/jira-client'
-import { LogCommand } from '../models/timesheet-models'
 
 export class LogCalculator {
     
