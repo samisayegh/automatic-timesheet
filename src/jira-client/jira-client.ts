@@ -72,14 +72,14 @@ export interface UserIssueResponse {
 export class JiraClient {
   constructor(private http: AxiosStatic, private credentialsResolver: ICredentialsResolver) {}
   
-  public async getIssuesWithWorkLogs(displayName: string, from: Date, to: Date) {
+  public async getIssuesWithWorkLogs(from: Date, to: Date) {
     const startAt = '0';
     const maxResults = '1000';
     const fields = 'worklog';
 
     const start = buildYearMonthDayString(from);
     const end = buildYearMonthDayString(to);
-    const jql = `worklogDate >= "${start}" and worklogDate < "${end}" and worklogAuthor in ("${displayName}")`;
+    const jql = `worklogDate >= "${start}" and worklogDate < "${end}" and worklogAuthor in (currentUser())`;
     
     const url = `https://coveord.atlassian.net/rest/api/2/search?fields=${fields}&maxResults=${maxResults}&jql=${jql}&startAt=${startAt}`;
     const headers = this.getHeaders();

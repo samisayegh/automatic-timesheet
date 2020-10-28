@@ -18,20 +18,19 @@ describe('Jira Client', () => {
   it('#getIssuesWithWorkLogs sends a request with the correct params', async () => {
     const client = buildClient();
 
-    const user = 'User A';
     const from = '2020-10-25';
     const to = '2020-10-26';
     const start = new Date(from);
     const end = new Date(to);
 
-    await client.getIssuesWithWorkLogs(user, start, end);
+    await client.getIssuesWithWorkLogs(start, end);
     const any = expect.anything();
 
     expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('https://coveord.atlassian.net/rest/api/2/search'), any);
     expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('fields=worklog'), any);
     expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('maxResults=1000'), any);
     expect(axios.get).toHaveBeenCalledWith(expect.stringContaining(`worklogDate >= "${from}" and worklogDate < "${to}"`), any);
-    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining(`worklogAuthor in ("${user}")`), any)
+    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining(`worklogAuthor in (currentUser())`), any)
   })
 
   it('#logTime sends a request with the correct params', async () => {
