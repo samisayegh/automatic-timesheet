@@ -28,7 +28,7 @@ interface DevDetails {
 }
 
 interface InstanceType {
-  respository: Repository[];
+  repository: Repository[];
 }
 
 interface Repository {
@@ -132,8 +132,7 @@ export class JiraClient {
     const variables = {issueId}
     const headers = this.getHeaders()
 
-    const response = await this.http.post<DevDetails>(url, {query, variables}, {headers})
-    return response?.data
+    return await this.http.post<{data: DevDetails}>(url, {query, variables}, {headers})
   }
 
   public async getUsers() {

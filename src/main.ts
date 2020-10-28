@@ -38,11 +38,11 @@ async function main() {
 }
 
 async function getCommitsAndIssueKeys(issue: Issue, client: JiraClient) {
-  const devDetails = await client.getDevDetailsForIssue(issue.id);
-
+  const response = await client.getDevDetailsForIssue(issue.id);
+  
   return {
     issue,
-    commits: devDetails.developmentInformation.details.instanceTypes[0].respository[0].commits
+    commits: response.data.data.developmentInformation.details.instanceTypes[0].repository[0].commits
   }
 }
 
@@ -59,7 +59,7 @@ async function executeLoggingPlan(plan: LogTimeInfo, client: JiraClient) {
   const promises = instructions.map(i => client.logTime(i));
   await Promise.all(promises);
 
-  console.log('successfully logged times');
+  console.log('successfully logged');
 }
 
 main();
