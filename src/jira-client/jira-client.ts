@@ -2,7 +2,7 @@ import { AxiosStatic } from 'axios';
 import { ICredentialsResolver } from '../security/jira-credentials-resolver'
 
 interface LogTimeProps {
-  issueId: string; // this might be issueKey
+  issueKey: string;
   hours: number;
   utc: Date;
 }
@@ -89,16 +89,18 @@ export class JiraClient {
   }
 
   public async logTime(options: LogTimeProps) {
-    const {issueId, hours, utc} = options;
+    const {issueKey, hours, utc} = options;
     
-    const url = `https://coveord.atlassian.net/rest/api/2/issue/${issueId}/worklog?adjustEstimate=auto`
+    const url = `https://coveord.atlassian.net/rest/api/2/issue/${issueKey}/worklog?adjustEstimate=auto`
 
     const data = {
       started: buildDateTimeString(utc),
       timeSpent: `${hours}h`
     }
 
-    await this.http.post(url, data);
+    const headers = this.getHeaders();
+
+    await this.http.post(url, data, {headers});
   }
 
   public async getDevDetailsForIssue(issueId: string) {

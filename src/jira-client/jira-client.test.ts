@@ -40,7 +40,7 @@ describe('Jira Client', () => {
     const october27th = new Date('2020-10-27')
     
     await client.logTime({
-      issueId: 'KIT-123',
+      issueKey: 'KIT-123',
       hours: 2,
       utc: october27th
     })
@@ -52,7 +52,7 @@ describe('Jira Client', () => {
     }
 
     expect(axios.post).toHaveBeenCalledTimes(1);
-    expect(axios.post).toHaveBeenCalledWith(url, data);
+    expect(axios.post).toHaveBeenCalledWith(url, data, expect.anything());
   })
 
   it('getDevDetailsForIssue sends a request with the correct params', async () => {
