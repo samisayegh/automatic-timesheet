@@ -11,13 +11,13 @@ config();
 
 async function main() {
   const args = process.argv.slice(2);
-  const start = args[0] || format(dayjs())
+  const start = args[0] || format(dayjs(Date.now()))
   const end = args[1] || start;
   
   // const allDates = getDateRange(start, end);
   
-  const startDate = new Date(start);
-  const endDate = new Date(end);
+  const startDate = dayjs(start).toDate();
+  const endDate = dayjs(end).toDate();
 
   const res = await jiraClient.getIssuesInProgress(startDate, endDate);
   
@@ -32,6 +32,8 @@ async function main() {
   });
   
   const calculator = new LogCalculator();
+
+  // console.log('start:', start, 'startDate', startDate.toDateString());
   const plan = calculator.calculateFromCommits(startDate, commitsForIssues);
   
   await executeLoggingPlan(plan, jiraClient);
