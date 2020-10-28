@@ -162,10 +162,6 @@ export class JiraClient {
   // accepts a start date and end date
   // returns the issue Ids
   public async getIssuesInProgress(dateStart: Date, dateEnd: Date) {
-  
-    console.log(`date start: ${dateStart}`);
-    console.log(`date end: ${dateEnd}`);
-
     // First, we try to get all issues which have been updated in the time window AND contains commits related
     const startAt = 'startAt=0';
     const maxResults = 'maxResults=100';

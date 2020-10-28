@@ -3,6 +3,6 @@ import {JiraClient} from './jira-client/jira-client';
 import axios from 'axios';
 
 const credentialResolver = new JiraCredentialsResolver();
-const JiraClientImpl = new JiraClient(axios, credentialResolver);
+const jiraClient = new JiraClient(axios, credentialResolver);
 
-export { credentialResolver, JiraClientImpl as jiraClient };
+export { credentialResolver, jiraClient };
