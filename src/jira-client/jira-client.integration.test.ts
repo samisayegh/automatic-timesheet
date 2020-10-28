@@ -1,6 +1,9 @@
 import {JiraClient} from './jira-client';
 import axios from 'axios';
 import { JiraCredentialsResolver } from '../security/jira-credentials-resolver';
+import { config } from 'dotenv';
+
+config();
 
 it('asserts correctly', () => {
   expect(true).toBe(true);
