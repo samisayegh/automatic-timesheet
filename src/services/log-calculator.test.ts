@@ -8,7 +8,7 @@ describe('log calculator', () => {
     expect(true).toBe(true);
   });
 
-  it('calculates correctly happy path', () => {
+  it('#calculateFromCommits should produce a logCommand', () => {
     const logCalculator = new LogCalculator();
     const dateOfCommitText = '2020-10-21';
     const commit1: Commit = {
@@ -31,4 +31,8 @@ describe('log calculator', () => {
     
     // expect(result.dateToLog.getMonth()).toBe(monthExpected);
   })
+
+//   it('#calculateFromCommits', () => {
+
+//   })
 });
