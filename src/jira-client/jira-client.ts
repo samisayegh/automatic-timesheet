@@ -2,7 +2,7 @@ import { AxiosStatic } from 'axios';
 import { ICredentialsResolver } from '../security/jira-credentials-resolver'
 import * as dayjs from 'dayjs';
 
-interface LogTimeProps {
+export interface LogTimeProps {
   issueKey: string;
   hours: number;
   utc: Date;
