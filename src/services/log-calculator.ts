@@ -2,6 +2,26 @@
 import { LogTimeInfo, LogCommand, CommitsForIssue, TimeToLog } from '../models/timesheet-models'
 
 export class LogCalculator {
+
+    private getUniqueIssueKeysForCurrentDate(logDate: Date, commitsForIssues: CommitsForIssue[]) {
+        const logDateToCompare = logDate.toDateString();
+        const listLog: string[] = [];
+
+        commitsForIssues.forEach(commitInfo => {
+            const jiraKey = commitInfo.issueKey;
+            
+            commitInfo.commits.forEach(commit => {
+                const dateOfCommit = new Date(commit.timestamp).toDateString();
+                
+                if(logDateToCompare === dateOfCommit) {
+                    listLog.push(jiraKey);
+                }
+            });
+        });
+
+        const uniqueIssueKeys = [...new Set(listLog)];
+        return uniqueIssueKeys;
+    }
     
     /**
      * calculateFromCommits
@@ -11,45 +31,17 @@ export class LogCalculator {
      */
     public calculateFromCommits(logDate: Date, commitsForIssues: CommitsForIssue[]) : LogTimeInfo { 
 
-        const logDateToCompare = logDate.toDateString();
+        const uniqueIssueKeys = this.getUniqueIssueKeysForCurrentDate(logDate, commitsForIssues);
 
-        const listLog: string[] = [];
-        
-        // iterate through commits in CommitInfo[]
-        // for each commit c in CommitInfo
-        // if it is in dateToLog, add to ListLog.
-        commitsForIssues.forEach(commitInfo => {
-            const jiraKey = commitInfo.issueKey;
-            
-            commitInfo.commits.forEach(commit => {
-                const dateOfCommit = new Date(commit.timestamp).toDateString();
-                console.log('date ofcommit: ' + dateOfCommit);
-                console.log('date of logDateToCompare = ' + logDateToCompare)
-                if(logDateToCompare === dateOfCommit && !listLog.includes(jiraKey)) {
-                    listLog.push(jiraKey);
-                    console.log('Adding to listLog');
-                } else {
-                    if(listLog.includes(jiraKey)) {
-                        console.log('issue key is already inclued :' + jiraKey);
-                    } else {
-                        console.log('ARE DIFFERENT');
-                    }
-                }
-            });
-        });
-        const uniqueIssueKeys = [...new Set(listLog)];
-
-        // Calculate all records in ListLog, take the first two, and divide time of 8.
         const logCommands: LogCommand[] = [];
 
-        if(listLog.length === 0) {
+        if(uniqueIssueKeys.length === 0) {
+            console.log('nothing here to log.');
             return {
                 dateToLog: new Date(),
                 logCommands: []
             };
         }
-
-        // todo: clean up listLog for single values
 
         if(uniqueIssueKeys.length === 1) {
             const singleLogCommand: LogCommand = {
@@ -67,7 +59,7 @@ export class LogCalculator {
             logCommands.push(firstIssue);
 
             const secondIssue: LogCommand = {
-                issueKey: listLog[1],
+                issueKey: uniqueIssueKeys[1],
                 logTime: TimeToLog.four
              };
              logCommands.push(secondIssue);
