@@ -17,7 +17,11 @@ export class LogCalculator {
         // if it is in dateToLog, add to ListLog.
 
         // Calculate all records in ListLog, take the first two, and divide time of 8.
-        return null;
+        const result: LogTimeInfo = {
+            dateToLog: new Date(),
+            logCommands: []
+        };
+        return result;
     }
 
     /**
