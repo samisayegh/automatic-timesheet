@@ -1,4 +1,5 @@
 import { AxiosStatic } from 'axios';
+import { ICredentialsResolver } from '../security/jira-credentials-resolver'
 
 interface LogTimeProps {
   issueId: string;
@@ -42,7 +43,7 @@ interface Commit {
 }
 
 export class JiraClient {
-  constructor(private http: AxiosStatic) {}
+  constructor(private http: AxiosStatic, private credentialsResolver: ICredentialsResolver) {}
 
   public async logTime(options: LogTimeProps) {
     const {issueId, hours, utc} = options;
@@ -109,7 +110,7 @@ export class JiraClient {
       offset += maxResults;
     }
 
-    return users.filter(u => u.active);
+    return users.filter(u => u.active); // !TODO Note - opt in vs opt out? users afffected
   }
   
   public async getIssuesInProgress() {
@@ -118,14 +119,16 @@ export class JiraClient {
     const startAt = 'startAt=0';
     const maxResults = 'maxResults=100';
     const fields = 'fields=issuetype,status,summary';
-    const jql = "assignee = currentUser() and status = 'in progress' order by created DESC";
+    const jql = "assignee = currentUser()  and development[commits].open > 0 and Updated  > 2020-10-26 order by created DESC";
     const url = `https://coveord.atlassian.net/rest/api/2/search?${startAt}&${maxResults}&${fields}&${jql}`;
   
     return await this.http.get(url);
   }
 
   private getHeaders() {
-    const auth = Buffer.from('email@example.com:<api_token>').toString('base64');
+    const apiToken = this.credentialsResolver.getApiToken();
+    const email = this.credentialsResolver.getEmail();
+    const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
     return {
       'Authorization': `Basic ${auth}`,
       'Accept': 'application/json'

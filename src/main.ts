@@ -1,3 +1,6 @@
+import { JiraCredentialsResolver } from './security/jira-credentials-resolver';
+// import {JiraClient, CredentialResolver} from './composition-root'
+
 /**
  * Some predefined delays (in milliseconds).
  */
@@ -5,6 +8,10 @@ export enum Delays {
   Short = 500,
   Medium = 2000,
   Long = 5000,
+}
+
+export class CompositionRoot {
+  credentialsResolver = new JiraCredentialsResolver()
 }
 
 /**
