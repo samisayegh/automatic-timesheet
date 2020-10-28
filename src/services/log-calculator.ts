@@ -58,7 +58,7 @@ export class LogCalculator {
              };
 
             logCommands.push(singleLogCommand);
-        } else if (uniqueIssueKeys.length === 2) {
+        } else if (uniqueIssueKeys.length >= 2) {
             const firstIssue: LogCommand = {
                 issueKey: uniqueIssueKeys[0],
                 logTime: TimeToLog.four
@@ -71,6 +71,11 @@ export class LogCalculator {
                 logTime: TimeToLog.four
              };
              logCommands.push(secondIssue);
+
+            if (uniqueIssueKeys.length > 2) {
+                console.log("Detected more than two issues, but only the first two are being logged.");
+                // todo: log discarded issues for user information.
+            }
         }
 
         const result: LogTimeInfo = {
