@@ -4,14 +4,15 @@ import { Commit } from "../jira-client/jira-client"
 import { CommitsForIssue } from '../models/timesheet-models';
 
 describe('log calculator', () => {
-  it('asserts correctly', () => {
-    expect(true).toBe(true);
-  });
 
-  it('#calculateFromCommits should produce a logCommand', () => {
-    const logCalculator = new LogCalculator();
-    const dateOfCommitText = '2020-10-21';
-    const commit1: Commit = {
+ let logCalculator: LogCalculator;
+ let commit1: Commit;
+ let dateOfCommitText: string;
+
+  beforeAll(() => {
+    logCalculator = new LogCalculator();
+    dateOfCommitText = '2020-10-21';
+    commit1 = {
         id: '123',
         author: {
             name: 'fguerreiro'
@@ -19,6 +20,9 @@ describe('log calculator', () => {
         timestamp: `${dateOfCommitText}T00:12:38Z`
     }
 
+  })
+
+  it('#calculateFromCommits should produce a logCommand', () => {
     const commitsForIssue: CommitsForIssue = {
         commits: [commit1],
         issueKey: 'SFCT-4242'
@@ -33,8 +37,6 @@ describe('log calculator', () => {
   })
 
   it('#calculateFromCommits should have proper Issue key Id', () => {
-    const logCalculator = new LogCalculator();
-    const dateOfCommitText = '2020-10-21';
     const expectedIssueKey = 'SFCT-4242';
     const commit1: Commit = {
         id: '123',
