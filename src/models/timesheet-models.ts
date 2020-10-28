@@ -9,4 +9,10 @@ enum TimeToLog {
     eight
 }
 
+// This is what is needed to log a time
+export interface LogTimeInfo {
+    dateToLog: Date,
+    logCommands: LogCommand[]
+}
+
 // Todo: move other models here!
