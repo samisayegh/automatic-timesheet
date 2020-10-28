@@ -1,14 +1,21 @@
-// import {JiraClient} from './jira-client';
-// import axios from 'axios';
-// import { JiraCredentialsResolver } from '../security/jira-credentials-resolver';
+import {JiraClient} from './jira-client';
+import axios from 'axios';
+import { JiraCredentialsResolver } from '../security/jira-credentials-resolver';
 
 it('asserts correctly', () => {
   expect(true).toBe(true);
 })
 
-// it('#getIssuesInProgress returns a valid response with issues', async () => {
-//   const client = new JiraClient(axios, new JiraCredentialsResolver());
-//   const result = await client.getIssuesWithWorkLogs(new Date('2020-10-20'), new Date('2020-10-28'));
+it('#getIssuesWithWorkLogs returns a valid response with issues', async () => {
+  const client = new JiraClient(axios, new JiraCredentialsResolver());
+  const result = await client.getIssuesWithWorkLogs(new Date('2020-10-20'), new Date('2020-10-20'));
 
-//   expect(result.issues).not.toBe(0);
-// })
+  expect(result.issues.length).not.toBe(0);
+})
+
+it('#getIssuesInProgress returns a valid response with issues', async () => {
+  const client = new JiraClient(axios, new JiraCredentialsResolver());
+  const result = await client.getIssuesInProgress(new Date('2020-10-20'), new Date('2020-10-20'));
+
+  expect(result.data.issues.length).not.toBe(0);
+})

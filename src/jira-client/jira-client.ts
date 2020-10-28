@@ -79,7 +79,7 @@ export class JiraClient {
 
     const start = buildYearMonthDayString(from);
     const end = buildYearMonthDayString(to);
-    const jql = `worklogDate >= "${start}" and worklogDate < "${end}" and worklogAuthor in (currentUser())`;
+    const jql = `worklogDate >= "${start}" and worklogDate <= "${end}" and worklogAuthor in (currentUser())`;
     
     const url = `https://coveord.atlassian.net/rest/api/2/search?fields=${fields}&maxResults=${maxResults}&jql=${jql}&startAt=${startAt}`;
     const headers = this.getHeaders();
