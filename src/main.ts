@@ -3,7 +3,7 @@ import * as dayjs from 'dayjs';
 
 import {getDateRange, format} from './date/date-range';
 import {jiraClient} from './composition-root'
-import { JiraClient, UserIssueResponse } from './jira-client/jira-client';
+import { Issue, JiraClient } from './jira-client/jira-client';
 import { LogCalculator } from './services/log-calculator';
 
 config();
@@ -34,10 +34,9 @@ async function main() {
   // log time
 }
 
-// @ts-ignore
-async function getCommitsAndIssueKeys(issue: UserIssueResponse, client: JiraClient) {
-  // for each issues get the commits for it
-  const devDetails = await client.getDevDetailsForIssue(issue.issueId);
+//@ts-ignore
+async function getCommitsAndIssueKeys(issue: Issue, client: JiraClient) {
+  const devDetails = await client.getDevDetailsForIssue(issue.id);
 
   return {
     issue,

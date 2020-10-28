@@ -45,12 +45,10 @@ export interface Commit {
 
 interface IssuesWithWorklogsResponse {
   total: number;
-  issues: Issue[];
+  issues: IssueWithWorklog[];
 }
 
-interface Issue {
-  id: string;
-  key: string;
+interface IssueWithWorklog extends Issue {
   fields: {
     worklog: {
       worklogs: Worklog[];
@@ -67,7 +65,12 @@ interface Worklog {
 
 export interface UserIssueResponse {
   total: number;
-  issues: {id: string; key: string}[];
+  issues: Issue[];
+}
+
+export interface Issue {
+  id: string;
+  key: string;
 }
 
 export class JiraClient {
