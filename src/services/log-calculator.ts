@@ -36,6 +36,7 @@ export class LogCalculator {
         const logCommands: LogCommand[] = [];
 
         if(uniqueIssueKeys.length === 0) {
+            console.log('nothing here to log.');
             return {
                 dateToLog: new Date(),
                 logCommands: []
