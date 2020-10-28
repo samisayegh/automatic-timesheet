@@ -151,15 +151,21 @@ export class JiraClient {
     return users.filter(u => u.active); // !TODO Note - opt in vs opt out? users afffected
   }
   
-  public async getIssuesInProgress() {
-    // /search?startAt=0&maxResults=100&fields=issuetype%2Cstatus%2Csummary&jql=assignee%20=%20currentUser()%20and%20status%20=%20%27in%20progress%27%20order%20by%20created%20DESC
+  // accepts a start date and end date
+  // returns the issue Ids
+  public async getIssuesInProgress(dateStart: string, dateEnd: string) {
   
+    console.log(`date start: ${dateStart}`);
+    console.log(`date end: ${dateEnd}`);
+
+    // First, we try to get all issues which have been updated in the time window AND contains commits related
     const startAt = 'startAt=0';
     const maxResults = 'maxResults=100';
     const fields = 'fields=issuetype,status,summary';
-    const jql = "assignee = currentUser()  and development[commits].open > 0 and Updated  > 2020-10-26 order by created DESC";
+    const jql = `assignee = currentUser() and development[commits].all > 0 and Updated >= "${dateStart} 00:00" and Updated <= "${dateEnd} 23:59"`;
     const url = `https://coveord.atlassian.net/rest/api/2/search?${startAt}&${maxResults}&${fields}&${jql}`;
   
+    // output: issue key, issue id
     return await this.http.get(url);
   }
 
