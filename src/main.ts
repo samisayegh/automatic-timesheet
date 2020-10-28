@@ -1,21 +1,19 @@
 import {config} from 'dotenv';
+import * as dayjs from 'dayjs';
+
+import {getDateRange, format} from './date/date-range';
 import {jiraClient} from './composition-root'
 import { JiraClient, UserIssueResponse } from './jira-client/jira-client';
 import { LogCalculator } from './services/log-calculator';
 
 config();
 
-// @ts-ignore
 async function main() {
+  const args = process.argv.slice(2);
+  const start = args[0] || format(dayjs())
+  const end = args[1] || start;
   
-  // those are inputs from the CLI
-  const dateStart = new Date('2020-10-28');
-
-  // this will be incremented by 7 days, we could remove from the API parameters
-  const dateEnd = new Date('2020-10-28');
-
-  // to do -> from the dateStart and dateEnd produce the list of dates to log
-  const allDates = [dateStart]; // Sami will build the func
+  const allDates = getDateRange(start, end);
 
   // Fetch the Issues
 
@@ -46,3 +44,5 @@ async function getCommitsAndIssueKeys(issue: UserIssueResponse, client: JiraClie
     commits: devDetails.developmentInformation.details.instanceTypes[0].respository[0].commits
   }
 }
+
+main();

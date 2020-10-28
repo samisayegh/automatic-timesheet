@@ -29,7 +29,8 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "create:config": "node ./scripts/create-config.js",
-    "postinstall": "npm run create:config"
+    "postinstall": "npm run create:config",
+    "log": "node ./build/src/main.js"
   },
   "author": "Jakub Synowiec <github@jakubsynowiec.info>",
   "license": "Apache-2.0",

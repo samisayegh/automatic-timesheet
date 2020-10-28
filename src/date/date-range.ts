@@ -15,7 +15,7 @@ export function getDateRange(from: string, to: string) {
   return range.map(date => format(date));
 }
 
-function format(date: dayjs.Dayjs) {
+export function format(date: dayjs.Dayjs) {
   return date.format('YYYY-MM-DD')
 }
 
