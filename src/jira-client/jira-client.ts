@@ -2,7 +2,7 @@ import { AxiosStatic } from 'axios';
 import { ICredentialsResolver } from '../security/jira-credentials-resolver'
 
 interface LogTimeProps {
-  issueId: string;
+  issueId: string; // this might be issueKey
   hours: number;
   utc: Date;
 }
@@ -34,7 +34,7 @@ interface Repository {
   commits: Commit[]
 }
 
-interface Commit {
+export interface Commit {
   id: string;
   timestamp: string;
   author: {
@@ -62,6 +62,11 @@ interface Worklog {
   timeSpentSeconds: number;
   id: string;
   issueId: string;
+}
+
+export interface UserIssueResponse {
+  issueId: string;
+  issueKey: string; // todo: Verify if JSON really returns the issues key
 }
 
 export class JiraClient {
@@ -151,9 +156,12 @@ export class JiraClient {
     return users.filter(u => u.active); // !TODO Note - opt in vs opt out? users afffected
   }
   
+  // move this to the service
+  // public async 
+
   // accepts a start date and end date
   // returns the issue Ids
-  public async getIssuesInProgress(dateStart: string, dateEnd: string) {
+  public async getIssuesInProgress(dateStart: Date, dateEnd: Date) {
   
     console.log(`date start: ${dateStart}`);
     console.log(`date end: ${dateEnd}`);
@@ -166,7 +174,7 @@ export class JiraClient {
     const url = `https://coveord.atlassian.net/rest/api/2/search?${startAt}&${maxResults}&${fields}&${jql}`;
   
     // output: issue key, issue id
-    return await this.http.get(url);
+    return await this.http.get<UserIssueResponse>(url);
   }
 
   private getHeaders() {

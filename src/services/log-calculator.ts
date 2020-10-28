@@ -1,4 +1,5 @@
 import { Commit } from '../jira-client/jira-client'
+import { LogTimeInfo } from '../models/timesheet-models'
 
 export class LogCalculator {
     
@@ -16,7 +17,7 @@ export class LogCalculator {
         // if it is in dateToLog, add to ListLog.
 
         // Calculate all records in ListLog, take the first two, and divide time of 8.
-        return [];
+        return null;
     }
 
     /**
