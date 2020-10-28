@@ -1,24 +1,9 @@
-
-export interface CommitInfo {
-    author: string,
-    id: string,
-    timestamp: Date
-}
-
-export interface LogCommand {
-    issueKey: string,
-    logTime: TimeToLog
-}
-
-// Enum to restrict business rule by type: should be either four or eight hours, nothing outside of that.
-enum TimeToLog {
-    four,
-    eight
-}
+import { Commit } from '../jira-client/jira-client'
+import { LogCommand } from '../models/timesheet-models'
 
 export class LogCalculator {
     // @ts-ignore
-    public calculateFromCommits(logDate: Date, commitInfos: CommitInfo[]) : LogCommand[] { 
+    public calculateFromCommits(logDate: Date, commitInfos: Commit[]) : LogCommand[] { 
 
         // iterate through commits in CommitInfo[]
         // for each commit c in CommitInfo
