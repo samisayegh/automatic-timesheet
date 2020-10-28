@@ -65,8 +65,8 @@ interface Worklog {
 }
 
 export interface UserIssueResponse {
-  issueId: string;
-  issueKey: string; // todo: Verify if JSON really returns the issues key
+  total: number;
+  issues: {id: string; key: string}[];
 }
 
 export class JiraClient {
@@ -158,20 +158,17 @@ export class JiraClient {
     return users.filter(u => u.active); // !TODO Note - opt in vs opt out? users afffected
   }
   
-  // move this to the service
-  // public async 
-
-  // accepts a start date and end date
-  // returns the issue Ids
-  public async getIssuesInProgress(dateStart: Date, dateEnd: Date) {
-    // First, we try to get all issues which have been updated in the time window AND contains commits related
+  public async getIssuesInProgress(from: Date, to: Date) {
     const startAt = 'startAt=0';
     const maxResults = 'maxResults=100';
     const fields = 'fields=issuetype,status,summary';
-    const jql = `assignee = currentUser() and development[commits].all > 0 and Updated >= "${dateStart} 00:00" and Updated <= "${dateEnd} 23:59"`;
+
+    const start = buildYearMonthDayString(from);
+    const end = buildYearMonthDayString(to);
+    const jql = `assignee = currentUser() and development[commits].all > 0 and Updated >= "${start} 00:00" and Updated <= "${end} 23:59"`;
+    
     const url = `https://coveord.atlassian.net/rest/api/2/search?${startAt}&${maxResults}&${fields}&${jql}`;
-  
-    // output: issue key, issue id
+    
     return await this.http.get<UserIssueResponse>(url);
   }
 
