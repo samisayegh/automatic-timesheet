@@ -33,6 +33,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "dayjs": "^1.9.4",
+    "dotenv": "^8.2.0",
     "tslib": "~2.0.1"
   },
   "volta": {

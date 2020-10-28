@@ -1,4 +1,4 @@
-import { getDateRange } from "./date"
+import { getDateRange } from "./date-range"
 
 describe('getDateRange', () => {
   it('when a the start and end dates match, it returns an array with one entry', () => {

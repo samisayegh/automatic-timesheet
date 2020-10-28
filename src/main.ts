@@ -1,6 +1,9 @@
+import {config} from 'dotenv';
 import {jiraClient} from './composition-root'
 import { JiraClient, UserIssueResponse } from './jira-client/jira-client';
 import { LogCalculator } from './services/log-calculator';
+
+config();
 
 // @ts-ignore
 async function main() {
