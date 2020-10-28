@@ -17,6 +17,30 @@ export interface User {
   locale: string;
 }
 
+interface DevDetails {
+  developmentInformation: {
+    details: {
+      instanceTypes: InstanceType[]
+    }
+  }
+}
+
+interface InstanceType {
+  respository: Repository[];
+}
+
+interface Repository {
+  commits: Commit[]
+}
+
+interface Commit {
+  id: string;
+  timestamp: string;
+  author: {
+    name: string;
+  }
+}
+
 export class JiraClient {
   constructor(private http: AxiosStatic) {}
 
@@ -31,6 +55,35 @@ export class JiraClient {
     }
 
     await this.http.post(url, data);
+  }
+
+  public async getDevDetailsForIssue(issueId: string) {
+    const url = 'https://coveord.atlassian.net/jsw/graphql?operation=DevDetailsDialog';
+    const query = `
+    query DevDetailsDialog($issueId: ID!) {
+      developmentInformation(issueId: $issueId) {
+        details {
+          instanceTypes {
+            repository {
+              commits {
+                id
+                timestamp
+                author {
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    `;
+    
+    const variables = {issueId}
+    const headers = this.getHeaders()
+
+    const response = await this.http.post<DevDetails>(url, {query, variables}, {headers})
+    return response?.data
   }
 
   public async getUsers() {

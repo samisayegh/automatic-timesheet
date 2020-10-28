@@ -32,6 +32,21 @@ describe('Jira Client', () => {
     expect(axios.post).toHaveBeenCalledWith(url, data);
   })
 
+  it('getDevDetailsForIssue sends a request with the correct params', async () => {
+    const client = new JiraClient(axios);
+    await client.getDevDetailsForIssue('1');
+
+    const data = {
+      query: expect.stringContaining('commits'),
+      variables: expect.objectContaining({issueId: '1'})
+    }
+
+    expect(axios.post).toHaveBeenCalledWith(
+      'https://coveord.atlassian.net/jsw/graphql?operation=DevDetailsDialog',
+      expect.objectContaining(data),
+      expect.anything())
+  }) 
+
   describe('#getUsers', () => {
     function buildActiveUsers(num: number) {
       const users: User[] = [];
