@@ -2,6 +2,7 @@ import {jiraClient} from './composition-root'
 import { JiraClient, UserIssueResponse } from './jira-client/jira-client';
 import { LogCalculator } from './services/log-calculator';
 
+// @ts-ignore
 async function main() {
   
   // those are inputs from the CLI
@@ -16,6 +17,7 @@ async function main() {
   // Fetch the Issues
 
   // to be fixed to have many issues
+  // @ts-ignore
   const issues = await jiraClient.getIssuesInProgress(dateStart, dateEnd);
   
   // Fetch Commits
@@ -25,11 +27,13 @@ async function main() {
 
   // log calculator
   const calculator = new LogCalculator();
+  // @ts-ignore
   const logTimes = calculator.calculateFromCommitsRetroactive(allDates, commits);
 
   // log time
 }
 
+// @ts-ignore
 async function getCommitsAndIssueKeys(issue: UserIssueResponse, client: JiraClient) {
   // for each issues get the commits for it
   const devDetails = await client.getDevDetailsForIssue(issue.issueId);
