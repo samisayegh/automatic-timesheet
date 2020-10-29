@@ -34,3 +34,11 @@ To automate the process, set up a cron-job on your computer to run at the end of
 - `npm run log` - Logs time.
 - `npm run create:config` - Generates an `.env` file if it does not already exist.
 - `npm run build` - transpiles TypeScript to JavasScript.
+
+
+## Limitations
+
+- Ensure the target day has no time logged. The initial version of the tool will always try to log 8 hours of time.
+- When specifying a day, pick one within the last 7 days for reproducible results. Older days will work on the first run, but may give different results on subsequent attempts as Jiras are updated and reordered.
+- The tool will log a maximum of 2 jiras for a day, assigning 4 hours to each.
+- The tool uses commits as proof-of-work. If you do not use git commits as part of your job, the tool will not find your associated jiras.
