@@ -11,8 +11,6 @@ jobs:
     - uses: actions/checkout@v2
     - uses: volta-cli/action@v1
     - run: npm ci --no-audit
-    - run: npm run lint --if-present
-    - run: npm test
     - run: npm run build --if-present
       env:
         CI: true

@@ -59,7 +59,7 @@ async function executeLoggingPlan(plan: LogTimeInfo, client: JiraClient) {
   const promises = instructions.map(i => client.logTime(i));
   await Promise.all(promises);
 
-  console.log('successfully logged');
+  console.log('complete');
 }
 
 main();
