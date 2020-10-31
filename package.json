@@ -26,13 +26,13 @@
     "build": "tsc -p tsconfig.release.json",
     "build:watch": "tsc -w -p tsconfig.release.json",
     "lint": "eslint . --ext .ts,.tsx",
-    "test": "jest --coverage",
+    "test": "jest",
     "test:watch": "jest --watch",
     "create:config": "node ./scripts/create-config.js",
     "postinstall": "npm run create:config",
     "log": "node ./build/src/main.js"
   },
-  "author": "Jakub Synowiec <github@jakubsynowiec.info>",
+  "author": "Sami Sayegh, Francisco Guerreiro",
   "license": "Apache-2.0",
   "dependencies": {
     "dayjs": "^1.9.4",
