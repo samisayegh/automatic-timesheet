@@ -9,9 +9,9 @@ it('asserts correctly', () => {
   expect(true).toBe(true);
 })
 
-it('#getIssuesWithWorkLogs returns a valid response with issues', async () => {
+it('#getWorkLogs returns a valid response with issues', async () => {
   const client = new JiraClient(axios, new JiraCredentialsResolver());
-  const result = await client.getIssuesWithWorkLogs(new Date('2020-10-20'), new Date('2020-10-20'));
+  const result = await client.getWorkLogs(new Date('2020-10-20'), new Date('2020-10-20'));
 
   expect(result.issues.length).not.toBe(0);
 })

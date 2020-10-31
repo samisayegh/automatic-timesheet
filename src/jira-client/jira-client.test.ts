@@ -16,7 +16,7 @@ describe('Jira Client', () => {
     (axios.post as jest.Mock).mockReset();
   })
 
-  it('#getIssuesWithWorkLogs sends a request with the correct params', async () => {
+  it('#getWorkLogs sends a request with the correct params', async () => {
     const client = buildClient();
 
     const from = '2020-10-25';
@@ -24,7 +24,7 @@ describe('Jira Client', () => {
     const start = dayjs(from).toDate();
     const end = dayjs(to).toDate();
 
-    await client.getIssuesWithWorkLogs(start, end);
+    await client.getWorkLogs(start, end);
     const any = expect.anything();
 
     expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('https://coveord.atlassian.net/rest/api/2/search'), any);

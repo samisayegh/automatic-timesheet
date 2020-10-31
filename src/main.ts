@@ -21,19 +21,20 @@ async function main() {
 
   const startDate = dayjs(start).toDate();
   const endDate = dayjs(end).toDate();
-  const issues = await getIssuesBetween(startDate, endDate, jiraClient);
-  
+  const work = await getWorkBetween(startDate, endDate, jiraClient);
+  // const worklogs = await jiraClient.getWorkLogs(startDate, endDate);
+
   dateRange.forEach(async dateString => {
     const targetDate = dayjs(dateString).toDate();
     const calculator = new LogCalculator();
-    const plan = calculator.calculateFromCommits(targetDate, issues);
+    const plan = calculator.calculateFromCommits(targetDate, work);
     
     console.log('Logging time for:', dateString)
     await executeLoggingPlan(plan, jiraClient);
   })
 }
 
-async function getIssuesBetween(start: Date, end: Date, client: JiraClient) {
+async function getWorkBetween(start: Date, end: Date, client: JiraClient) {
   const res = await client.getIssuesInProgress(start, end);
   const promises = res.data.issues.map(issue => fetchIssueInfo(issue, jiraClient))
   return await Promise.all(promises);

@@ -43,12 +43,12 @@ export interface Commit {
   }
 }
 
-interface IssuesWithWorklogsResponse {
+interface WorklogsResponse {
   total: number;
-  issues: IssueWithWorklog[];
+  issues: IssueAndWorklog[];
 }
 
-interface IssueWithWorklog extends Issue {
+interface IssueAndWorklog extends Issue {
   fields: {
     worklog: {
       worklogs: Worklog[];
@@ -76,7 +76,7 @@ export interface Issue {
 export class JiraClient {
   constructor(private http: AxiosStatic, private credentialsResolver: ICredentialsResolver) {}
   
-  public async getIssuesWithWorkLogs(from: Date, to: Date) {
+  public async getWorkLogs(from: Date, to: Date) {
     const startAt = '0';
     const maxResults = '1000';
     const fields = 'worklog';
@@ -87,7 +87,7 @@ export class JiraClient {
     
     const url = `https://coveord.atlassian.net/rest/api/2/search?fields=${fields}&maxResults=${maxResults}&jql=${jql}&startAt=${startAt}`;
     const headers = this.getHeaders();
-    const res = await this.http.get<IssuesWithWorklogsResponse>(url, {headers});
+    const res = await this.http.get<WorklogsResponse>(url, {headers});
 
     return res?.data;
   }
