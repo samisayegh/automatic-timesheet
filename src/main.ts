@@ -1,7 +1,7 @@
 import {config} from 'dotenv';
 import * as dayjs from 'dayjs';
 
-import {format} from './date/date-range';
+import {format, getDateRange} from './date/date-range';
 import {jiraClient} from './composition-root'
 import { Issue, JiraClient, LogTimeProps } from './jira-client/jira-client';
 import { LogCalculator } from './services/log-calculator';
@@ -13,20 +13,30 @@ async function main() {
   const args = process.argv.slice(2);
   const start = args[0] || format(dayjs(Date.now()))
   const end = args[1] || start;
-  
-  // const allDates = getDateRange(start, end);
-  
+  const dateRange = getDateRange(start, end);
+
+  if (!dateRange.length) {
+    return;
+  }
+
   const startDate = dayjs(start).toDate();
   const endDate = dayjs(end).toDate();
+  const issues = await getIssuesBetween(startDate, endDate, jiraClient);
+  
+  dateRange.forEach(async dateString => {
+    const targetDate = dayjs(dateString).toDate();
+    const calculator = new LogCalculator();
+    const plan = calculator.calculateFromCommits(targetDate, issues);
+    
+    console.log('Logging time for:', dateString)
+    await executeLoggingPlan(plan, jiraClient);
+  })
+}
 
-  const res = await jiraClient.getIssuesInProgress(startDate, endDate);
+async function getIssuesBetween(start: Date, end: Date, client: JiraClient) {
+  const res = await client.getIssuesInProgress(start, end);
   const promises = res.data.issues.map(issue => fetchIssueInfo(issue, jiraClient))
-  const issues = await Promise.all(promises)
-  
-  const calculator = new LogCalculator();
-  const plan = calculator.calculateFromCommits(startDate, issues);
-  
-  await executeLoggingPlan(plan, jiraClient);
+  return await Promise.all(promises);
 }
 
 async function fetchIssueInfo(issue: Issue, client: JiraClient): Promise<IssueInfo> {
