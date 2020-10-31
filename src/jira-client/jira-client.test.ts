@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { buildMockUser } from '../mocks/mock-user';
+import { buildWorklogResponse } from '../mocks/mock-worklog-response';
 import { JiraCredentialsResolver } from '../security/jira-credentials-resolver';
 import { JiraClient, User } from './jira-client';
 import * as dayjs from 'dayjs';
@@ -18,6 +19,7 @@ describe('Jira Client', () => {
 
   it('#getWorkLogs sends a request with the correct params', async () => {
     const client = buildClient();
+    (axios.get as jest.Mock).mockReturnValueOnce({data: buildWorklogResponse()})
 
     const from = '2020-10-25';
     const to = '2020-10-26';

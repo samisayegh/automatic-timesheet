@@ -43,12 +43,12 @@ export interface Commit {
   }
 }
 
-interface WorklogsResponse {
+export interface WorklogResponse {
   total: number;
-  issues: IssueAndWorklog[];
+  issues: IssueWithWorklog[];
 }
 
-interface IssueAndWorklog extends Issue {
+interface IssueWithWorklog extends Issue {
   fields: {
     worklog: {
       worklogs: Worklog[];
@@ -56,7 +56,11 @@ interface IssueAndWorklog extends Issue {
   }
 }
 
-interface Worklog {
+export interface WorklogIssue extends Issue {
+  worklogs: Worklog[]
+}
+
+export interface Worklog {
   started: string;
   timeSpentSeconds: number;
   id: string;
@@ -87,9 +91,17 @@ export class JiraClient {
     
     const url = `https://coveord.atlassian.net/rest/api/2/search?fields=${fields}&maxResults=${maxResults}&jql=${jql}&startAt=${startAt}`;
     const headers = this.getHeaders();
-    const res = await this.http.get<WorklogsResponse>(url, {headers});
+    const res = await this.http.get<WorklogResponse>(url, {headers});
 
-    return res?.data;
+    return this.flattenWorklogResponse(res.data);
+  }
+
+  private flattenWorklogResponse(res: WorklogResponse): WorklogIssue[] {
+    return res.issues.map(issue => {
+      const {id, key, fields} = issue;
+      const worklogs = fields.worklog.worklogs;
+      return {id, key, worklogs}
+    })
   }
 
   public async logTime(options: LogTimeProps) {

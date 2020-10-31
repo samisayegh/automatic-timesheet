@@ -13,7 +13,7 @@ it('#getWorkLogs returns a valid response with issues', async () => {
   const client = new JiraClient(axios, new JiraCredentialsResolver());
   const result = await client.getWorkLogs(new Date('2020-10-20'), new Date('2020-10-20'));
 
-  expect(result.issues.length).not.toBe(0);
+  expect(result.length).not.toBe(0);
 })
 
 it('#getIssuesInProgress returns a valid response with issues', async () => {
