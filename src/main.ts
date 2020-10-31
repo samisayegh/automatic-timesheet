@@ -4,7 +4,7 @@ import * as dayjs from 'dayjs';
 import {format, getDateRange} from './date/date-range';
 import {jiraClient} from './composition-root'
 import { Issue, JiraClient, LogTimeProps } from './jira-client/jira-client';
-import { LogCalculator } from './services/log-calculator';
+import { LogCalculator } from './log-calculator/log-calculator';
 import { IssueInfo, LogTimeInfo, TimeToLog } from './models/timesheet-models';
 
 config();

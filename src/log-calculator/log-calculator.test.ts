@@ -1,32 +1,14 @@
 import { LogCalculator } from "./log-calculator";
 import { Commit } from "../jira-client/jira-client"
-import { IssueInfo } from '../models/timesheet-models';
+import { buildIssueInfo } from '../mocks/mock-issue-info';
+import { buildCommit } from '../mocks/mock-commit';
 
 describe('log calculator', () => {
 
   let logCalculator: LogCalculator;
   let commit1: Commit;
   let dateOfCommitText: string;
-
-  function buildCommit(config: Partial<Commit> = {}): Commit {
-    return {
-      author: {
-        name: ''
-      },
-      id: '',
-      timestamp: '',
-      ...config
-    }
-  }
-
-  function buildIssueInfo(config: Partial<IssueInfo> = {}): IssueInfo {
-    return {
-      issueKey: '',
-      commits: [],
-      ...config
-    }
-  }
-
+  
   beforeAll(() => {
     logCalculator = new LogCalculator();
     dateOfCommitText = '2020-10-21';
