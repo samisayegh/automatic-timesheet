@@ -1,26 +1,21 @@
-// import { Commit } from '../jira-client/jira-client'
+import { Commit } from '../jira-client/jira-client';
 import { LogTimeInfo, LogCommand, CommitsForIssue, TimeToLog } from '../models/timesheet-models'
 
 export class LogCalculator {
 
-    private getUniqueIssueKeysForCurrentDate(logDate: Date, commitsForIssues: CommitsForIssue[]) {
-        const logDateToCompare = logDate.toDateString();
-        const listLog: string[] = [];
+    private getActiveIssueKeysForDate(logDate: Date, commitsForIssues: CommitsForIssue[]) {
+        const targetDate = logDate.toDateString();
+        const issues = commitsForIssues.filter(commitInfo => this.hasCommitOnDate(commitInfo.commits, targetDate));
+        return issues.map(issue => issue.issueKey);
+    }
 
-        commitsForIssues.forEach(commitInfo => {
-            const jiraKey = commitInfo.issueKey;
-            
-            commitInfo.commits.forEach(commit => {
-                const dateOfCommit = new Date(commit.timestamp).toDateString();
-                
-                if(logDateToCompare === dateOfCommit) {
-                    listLog.push(jiraKey);
-                }
-            });
-        });
+    private hasCommitOnDate(commits: Commit[], targetDate: string) {
+        return !!commits.find(commit => this.commitIsOnDate(commit, targetDate))
+    }
 
-        const uniqueIssueKeys = [...new Set(listLog)];
-        return uniqueIssueKeys;
+    private commitIsOnDate(commit: Commit, targetDate: string) {
+        const commitDate = new Date(commit.timestamp).toDateString();
+        return commitDate === targetDate;
     }
     
     /**
@@ -31,11 +26,11 @@ export class LogCalculator {
      */
     public calculateFromCommits(logDate: Date, commitsForIssues: CommitsForIssue[]) : LogTimeInfo { 
 
-        const uniqueIssueKeys = this.getUniqueIssueKeysForCurrentDate(logDate, commitsForIssues);
+        const issueKeys = this.getActiveIssueKeysForDate(logDate, commitsForIssues);
 
         const logCommands: LogCommand[] = [];
 
-        if(uniqueIssueKeys.length === 0) {
+        if(issueKeys.length === 0) {
             console.log('nothing here to log.');
             return {
                 dateToLog: new Date(),
@@ -43,28 +38,28 @@ export class LogCalculator {
             };
         }
 
-        if(uniqueIssueKeys.length === 1) {
+        if(issueKeys.length === 1) {
             const singleLogCommand: LogCommand = {
-                issueKey: uniqueIssueKeys[0],
+                issueKey: issueKeys[0],
                 logTime: TimeToLog.eight
              };
 
             logCommands.push(singleLogCommand);
-        } else if (uniqueIssueKeys.length >= 2) {
+        } else if (issueKeys.length >= 2) {
             const firstIssue: LogCommand = {
-                issueKey: uniqueIssueKeys[0],
+                issueKey: issueKeys[0],
                 logTime: TimeToLog.four
              };
 
             logCommands.push(firstIssue);
 
             const secondIssue: LogCommand = {
-                issueKey: uniqueIssueKeys[1],
+                issueKey: issueKeys[1],
                 logTime: TimeToLog.four
              };
              logCommands.push(secondIssue);
 
-            if (uniqueIssueKeys.length > 2) {
+            if (issueKeys.length > 2) {
                 console.log("Detected more than two issues, but only the first two are being logged.");
                 // todo: log discarded issues for user information.
             }
