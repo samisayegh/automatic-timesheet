@@ -5,7 +5,7 @@ import {format} from './date/date-range';
 import {jiraClient} from './composition-root'
 import { Issue, JiraClient, LogTimeProps } from './jira-client/jira-client';
 import { LogCalculator } from './services/log-calculator';
-import { CommitsForIssue, LogTimeInfo, TimeToLog } from './models/timesheet-models';
+import { IssueInfo, LogTimeInfo, TimeToLog } from './models/timesheet-models';
 
 config();
 
@@ -20,28 +20,20 @@ async function main() {
   const endDate = dayjs(end).toDate();
 
   const res = await jiraClient.getIssuesInProgress(startDate, endDate);
-  
-  const promises = res.data.issues.map(issue => getCommitsAndIssueKeys(issue, jiraClient))
-  const issuesAndCommits = await Promise.all(promises)
-
-  const commitsForIssues: CommitsForIssue[] = issuesAndCommits.map(i => {
-    const issueKey = i.issue.key;
-    const commits = i.commits;
-
-    return {issueKey, commits}
-  });
+  const promises = res.data.issues.map(issue => fetchIssueInfo(issue, jiraClient))
+  const issues = await Promise.all(promises)
   
   const calculator = new LogCalculator();
-  const plan = calculator.calculateFromCommits(startDate, commitsForIssues);
+  const plan = calculator.calculateFromCommits(startDate, issues);
   
   await executeLoggingPlan(plan, jiraClient);
 }
 
-async function getCommitsAndIssueKeys(issue: Issue, client: JiraClient) {
+async function fetchIssueInfo(issue: Issue, client: JiraClient): Promise<IssueInfo> {
   const response = await client.getDevDetailsForIssue(issue.id);
   
   return {
-    issue,
+    issueKey: issue.key,
     commits: response.data.data.developmentInformation.details.instanceTypes[0].repository[0].commits
   }
 }

@@ -17,7 +17,7 @@ export interface LogTimeInfo {
     logCommands: LogCommand[]
 }
 
-export interface CommitsForIssue {
+export interface IssueInfo {
     issueKey: string,
     commits: Commit[]
 }

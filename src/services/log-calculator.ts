@@ -1,9 +1,9 @@
 import { Commit } from '../jira-client/jira-client';
-import { LogTimeInfo, LogCommand, CommitsForIssue, TimeToLog } from '../models/timesheet-models'
+import { LogTimeInfo, LogCommand, IssueInfo, TimeToLog } from '../models/timesheet-models'
 
 export class LogCalculator {
 
-    private getActiveIssueKeysForDate(logDate: Date, commitsForIssues: CommitsForIssue[]) {
+    private getActiveIssueKeysForDate(logDate: Date, commitsForIssues: IssueInfo[]) {
         const targetDate = logDate.toDateString();
         const issues = commitsForIssues.filter(commitInfo => this.hasCommitOnDate(commitInfo.commits, targetDate));
         return issues.map(issue => issue.issueKey);
@@ -24,7 +24,7 @@ export class LogCalculator {
      * Input: the date to log and commits relative to this day
      * Output: the logTimeInfo
      */
-    public calculateFromCommits(logDate: Date, commitsForIssues: CommitsForIssue[]) : LogTimeInfo { 
+    public calculateFromCommits(logDate: Date, commitsForIssues: IssueInfo[]) : LogTimeInfo { 
 
         const issueKeys = this.getActiveIssueKeysForDate(logDate, commitsForIssues);
 
@@ -79,7 +79,7 @@ export class LogCalculator {
      * Output: the logTimeInfos list, each one corresponding to one particular day to log
      */
     // @ts-ignore
-    public calculateFromCommitsRetroactive(logDates: Date[], commitsForIssues: CommitsForIssue[]) : LogTimeInfo[] {
+    public calculateFromCommitsRetroactive(logDates: Date[], commitsForIssues: IssueInfo[]) : LogTimeInfo[] {
 
         // todo: validate Dates input, should no be duplicate!
 

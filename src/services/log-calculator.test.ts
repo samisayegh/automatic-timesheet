@@ -1,6 +1,6 @@
 import { LogCalculator } from "./log-calculator";
 import { Commit } from "../jira-client/jira-client"
-import { CommitsForIssue } from '../models/timesheet-models';
+import { IssueInfo } from '../models/timesheet-models';
 
 describe('log calculator', () => {
 
@@ -21,7 +21,7 @@ describe('log calculator', () => {
   })
 
   it('#calculateFromCommits should produce a logCommand', () => {
-    const commitsForIssue: CommitsForIssue = {
+    const commitsForIssue: IssueInfo = {
         commits: [commit1],
         issueKey: 'SFCT-4242'
     }
@@ -33,7 +33,7 @@ describe('log calculator', () => {
 
   it('#calculateFromCommits should have proper Issue key Id', () => {
     const expectedIssueKey = 'SFCT-4242';
-    const commitsForIssue: CommitsForIssue = {
+    const commitsForIssue: IssueInfo = {
         commits: [commit1],
         issueKey: expectedIssueKey
     }
@@ -55,12 +55,12 @@ describe('log calculator', () => {
         timestamp: `${dateOfCommitText}T02:12:38Z`
     }
 
-    const commitsForIssue1: CommitsForIssue = {
+    const commitsForIssue1: IssueInfo = {
         commits: [commit1],
         issueKey: expectedIssueKey1
     }
 
-    const commitsForIssue2: CommitsForIssue = {
+    const commitsForIssue2: IssueInfo = {
         commits: [commit2],
         issueKey: expectedIssueKey2
     }
@@ -85,17 +85,17 @@ describe('log calculator', () => {
         timestamp: `${dateOfCommitText}T02:12:38Z`
     }
 
-    const commitsForIssue1: CommitsForIssue = {
+    const commitsForIssue1: IssueInfo = {
         commits: [commit1],
         issueKey: expectedIssueKey1
     }
 
-    const commitsForIssue2: CommitsForIssue = {
+    const commitsForIssue2: IssueInfo = {
         commits: [commit2],
         issueKey: expectedIssueKey2
     }
 
-    const commitsForIssue3: CommitsForIssue = {
+    const commitsForIssue3: IssueInfo = {
         commits: [commit2],
         issueKey: 'SFCT-0001'
     }
@@ -121,12 +121,12 @@ describe('log calculator', () => {
         timestamp: `${dateOfCommitText}T02:12:38Z`
     }
 
-    const commitsForIssue1: CommitsForIssue = {
+    const commitsForIssue1: IssueInfo = {
         commits: [commit1],
         issueKey: expectedIssueKey1
     }
 
-    const commitsForIssue2: CommitsForIssue = {
+    const commitsForIssue2: IssueInfo = {
         commits: [commit2],
         issueKey: expectedIssueKey2
     }
@@ -160,12 +160,12 @@ describe('log calculator', () => {
         timestamp: `${date2}T02:12:38Z`
     }
 
-    const commitsForIssue1: CommitsForIssue = {
+    const commitsForIssue1: IssueInfo = {
         commits: [commit1],
         issueKey: expectedIssueKey1
     }
 
-    const commitsForIssue2: CommitsForIssue = {
+    const commitsForIssue2: IssueInfo = {
         commits: [commit2],
         issueKey: expectedIssueKey2
     }
