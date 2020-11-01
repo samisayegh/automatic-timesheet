@@ -55,8 +55,7 @@ async function executeLoggingPlan(plan: LogPlan, client: JiraClient) {
 
   const instructions: LogTimeProps[] = logCommands.map(command => {
     const {issueKey, seconds} = command;
-    const hours = seconds / 3600;
-    return {hours, issueKey, utc: logDate}
+    return {issueKey, seconds, utc: logDate}
   })
 
   const promises = instructions.map(i => client.logTime(i));

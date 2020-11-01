@@ -4,7 +4,7 @@ import * as dayjs from 'dayjs';
 
 export interface LogTimeProps {
   issueKey: string;
-  hours: number;
+  seconds: number;
   utc: Date;
 }
 
@@ -105,13 +105,13 @@ export class JiraClient {
   }
 
   public async logTime(options: LogTimeProps) {
-    const {issueKey, hours, utc} = options;
+    const {issueKey, seconds, utc} = options;
     
     const url = `https://coveord.atlassian.net/rest/api/2/issue/${issueKey}/worklog?adjustEstimate=auto`
 
     const data = {
       started: buildDateTimeString(utc),
-      timeSpent: `${hours}h`
+      timeSpentSeconds: seconds
     }
 
     const headers = this.getHeaders();

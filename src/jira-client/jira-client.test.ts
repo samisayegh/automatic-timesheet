@@ -43,13 +43,13 @@ describe('Jira Client', () => {
     
     await client.logTime({
       issueKey: 'KIT-123',
-      hours: 2,
+      seconds: 2 * 3600,
       utc: october27th
     })
 
     const url = 'https://coveord.atlassian.net/rest/api/2/issue/KIT-123/worklog?adjustEstimate=auto'
     const data = {
-      timeSpent: '2h',
+      timeSpentSeconds: 7200,
       started: '2020-10-27T09:00:00.000+0000'
     }
 
