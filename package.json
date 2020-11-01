@@ -29,7 +29,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "create:config": "node ./scripts/create-config.js",
-    "postinstall": "npm run create:config",
+    "setup": "npm i && npm run create:config && npm run build",
     "log": "node ./build/src/main.js"
   },
   "author": "Sami Sayegh, Francisco Guerreiro",

@@ -7,9 +7,8 @@ A tool that automatically fills your timesheet based on your commits.
 You will need to have node and npm installed. You can [download it here](https://nodejs.org/en/download/). Once ready,
 
 1. Clone the repo.
-2. Install dependencies: `npm i`
+2. Setup the project: `npm run setup`
 3. In the `.env` file, add your Coveo email, and a Jira token that [can be generated here](https://id.atlassian.com/manage-profile/security/api-tokens).
-4. Build the project: `npm run build`
 
 
 ## Logging time
@@ -24,6 +23,12 @@ Alternatively, pass a date formatted as `YYYY-MM-DD` to log time for a previous 
 
 ```
 npm run log -- 2020-10-23
+```
+
+Pass a start and end date to log time for a range of dates, inclusive. No time will be logged on weekends.
+
+```
+npm run log -- 2020-10-23 2020-10-26
 ```
 
 To automate the process, set up a cron-job on your computer to run at the end of your working day (e.g. 5pm).

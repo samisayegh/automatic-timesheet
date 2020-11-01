@@ -32,6 +32,8 @@ async function main() {
     console.log('Logging time for:', dateString)
     await executeLoggingPlan(plan, jiraClient);
   })
+
+  console.log('done');
 }
 
 async function getWorkBetween(start: Date, end: Date, client: JiraClient) {
@@ -60,8 +62,6 @@ async function executeLoggingPlan(plan: LogPlan, client: JiraClient) {
 
   const promises = instructions.map(i => client.logTime(i));
   await Promise.all(promises);
-
-  console.log('complete');
 }
 
 main();
