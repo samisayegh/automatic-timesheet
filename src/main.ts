@@ -4,8 +4,8 @@ import * as dayjs from 'dayjs';
 import {format, getDateRange} from './date/date-range';
 import {jiraClient} from './composition-root'
 import { Issue, JiraClient, LogTimeProps } from './jira-client/jira-client';
-import { LogCalculator } from './log-calculator/log-calculator';
-import { IssueInfo, LogTimeInfo, TimeToLog } from './models/timesheet-models';
+import { LogCalculator, LogPlan } from './log-calculator/log-calculator';
+import { IssueInfo} from './models/timesheet-models';
 
 config();
 
@@ -22,12 +22,12 @@ async function main() {
   const startDate = dayjs(start).toDate();
   const endDate = dayjs(end).toDate();
   const work = await getWorkBetween(startDate, endDate, jiraClient);
-  // const worklogs = await jiraClient.getWorkLogs(startDate, endDate);
+  const worklogs = await jiraClient.getWorkLogs(startDate, endDate);
 
   dateRange.forEach(async dateString => {
     const targetDate = dayjs(dateString).toDate();
     const calculator = new LogCalculator();
-    const plan = calculator.calculateFromCommits(targetDate, work);
+    const plan = calculator.calculateLogPlan(targetDate, work, worklogs);
     
     console.log('Logging time for:', dateString)
     await executeLoggingPlan(plan, jiraClient);
@@ -50,13 +50,13 @@ async function fetchIssueInfo(issue: Issue, client: JiraClient): Promise<IssueIn
 }
 
 
-async function executeLoggingPlan(plan: LogTimeInfo, client: JiraClient) {
-  const {dateToLog, logCommands} = plan;
+async function executeLoggingPlan(plan: LogPlan, client: JiraClient) {
+  const {logDate, logCommands} = plan;
 
-  const instructions: LogTimeProps[] = logCommands.map(c => {
-    const {issueKey, logTime} = c;
-    const hours = logTime === TimeToLog.eight ? 8 : 4;
-    return {hours, issueKey, utc: dateToLog}
+  const instructions: LogTimeProps[] = logCommands.map(command => {
+    const {issueKey, seconds} = command;
+    const hours = seconds / 3600;
+    return {hours, issueKey, utc: logDate}
   })
 
   const promises = instructions.map(i => client.logTime(i));
