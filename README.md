@@ -44,4 +44,4 @@ To automate the process, set up a cron-job on your computer to run at the end of
 ## Limitations
 
 - You must be assigned to the jiras for the tool to find them.
-- The tool uses commits as proof-of-work. If you do not use git commits as part of your job, the tool will not find your associated jiras.
+- The tool uses commits as proof-of-work. If you do not use git commits as part of your job, the tool will not log time for your associated jiras.
