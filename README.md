@@ -25,7 +25,7 @@ Alternatively, pass a date formatted as `YYYY-MM-DD` to log time for a previous 
 npm run log -- 2020-10-23
 ```
 
-Pass a start and end date to log time for a range of dates, inclusive. No time will be logged on weekends.
+To log time for a range of dates, pass a start and end date.
 
 ```
 npm run log -- 2020-10-23 2020-10-26
@@ -43,7 +43,5 @@ To automate the process, set up a cron-job on your computer to run at the end of
 
 ## Limitations
 
-- Ensure the target day has no time logged. The initial version of the tool will always try to log 8 hours of time.
-- When specifying a day, pick one within the last 7 days for reproducible results. Older days will work on the first run, but may give different results on subsequent attempts as Jiras are updated and reordered.
-- The tool will log a maximum of 2 jiras for a day, assigning 4 hours to each.
+- You must be assigned to the jiras for the tool to find them.
 - The tool uses commits as proof-of-work. If you do not use git commits as part of your job, the tool will not find your associated jiras.
