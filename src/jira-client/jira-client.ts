@@ -1,4 +1,4 @@
-import { AxiosStatic } from 'axios';
+import { AxiosStatic, AxiosError } from 'axios';
 import { ICredentialsResolver } from '../security/jira-credentials-resolver'
 import * as dayjs from 'dayjs';
 
@@ -147,8 +147,8 @@ export class JiraClient {
     try {
       const response = await this.http.post<{data: DevDetails}>(url, {query, variables}, {headers});
       return response.data.data.developmentInformation.details;
-    } catch (e) {
-      console.log(e);
+    } catch (e: unknown) {
+      logError(e);
       return {instanceTypes: []}
     }
   }
@@ -195,8 +195,8 @@ export class JiraClient {
     try {
       const response = await this.http.get<UserIssueResponse>(url, {headers});
       return response.data.issues;
-    } catch (e) {
-      console.log(e);
+    } catch (e: unknown) {
+      logError(e);
       return [];
     }
   }
@@ -226,7 +226,19 @@ function buildYearMonthDayString(date: Date) {
   return dayjs(date).format('YYYY-MM-DD');
 }
 
+function logError(e: unknown) {
+  if (isAxiosError(e)) {
+    console.log(e.message);
+    console.log(e.toJSON());
+    return;
+  }
+  
+  console.log(e);
+}
 
+function isAxiosError(e: any): e is AxiosError {
+  return 'isAxiosError' in e;
+} 
 // Get all active users from paginated api
 
 // Improve authentication flow (extract the api key better and inject in the constructor)
