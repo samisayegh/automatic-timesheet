@@ -239,9 +239,3 @@ function logError(e: unknown) {
 function isAxiosError(e: any): e is AxiosError {
   return 'isAxiosError' in e;
 } 
-// Get all active users from paginated api
-
-// Improve authentication flow (extract the api key better and inject in the constructor)
-// Make getIssuesInProgress more flexible (receive user displayname as parameter)
-
-// Improve proof-of-work determination (someone may not have issues in progress)
