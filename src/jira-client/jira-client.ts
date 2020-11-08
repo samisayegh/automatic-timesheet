@@ -119,7 +119,7 @@ export class JiraClient {
     await this.http.post(url, data, {headers});
   }
 
-  public async getDevDetailsForIssue(issueId: string) {
+  public async getDevDetailsForIssue(issueId: string): Promise<DevDetails['developmentInformation']['details']> {
     const url = 'https://coveord.atlassian.net/jsw/graphql?operation=DevDetailsDialog';
     const query = `
     query DevDetailsDialog($issueId: ID!) {
@@ -144,7 +144,13 @@ export class JiraClient {
     const variables = {issueId}
     const headers = this.getHeaders()
 
-    return await this.http.post<{data: DevDetails}>(url, {query, variables}, {headers})
+    try {
+      const response = await this.http.post<{data: DevDetails}>(url, {query, variables}, {headers});
+      return response.data.data.developmentInformation.details;
+    } catch (e) {
+      console.log(e);
+      return {instanceTypes: []}
+    }
   }
 
   public async getUsers() {

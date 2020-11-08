@@ -43,11 +43,11 @@ async function getWorkBetween(start: Date, end: Date, client: JiraClient) {
 }
 
 async function fetchIssueInfo(issue: Issue, client: JiraClient): Promise<IssueInfo> {
-  const response = await client.getDevDetailsForIssue(issue.id);
+  const details = await client.getDevDetailsForIssue(issue.id);
   
   return {
     issueKey: issue.key,
-    commits: response.data.data.developmentInformation.details.instanceTypes[0].repository[0].commits
+    commits: details.instanceTypes[0].repository[0].commits
   }
 }
 

@@ -77,20 +77,30 @@ describe('Jira Client', () => {
     })
   })
 
-  it('getDevDetailsForIssue sends a request with the correct params', async () => {
-    const client = buildClient();
-    await client.getDevDetailsForIssue('1');
+  describe('#getDevDetailsForIssue', () => {
+    it('sends a request with the correct params', async () => {
+      const client = buildClient();
+      await client.getDevDetailsForIssue('1');
+  
+      const data = {
+        query: expect.stringContaining('commits'),
+        variables: expect.objectContaining({issueId: '1'})
+      }
+  
+      expect(axios.post).toHaveBeenCalledWith(
+        'https://coveord.atlassian.net/jsw/graphql?operation=DevDetailsDialog',
+        expect.objectContaining(data),
+        expect.anything())
+    })
 
-    const data = {
-      query: expect.stringContaining('commits'),
-      variables: expect.objectContaining({issueId: '1'})
-    }
+    it('when the request throws an error, it recovers', async () => {
+      (axios.post as jest.Mock).mockRejectedValue('');
+      const client = buildClient();
+      const details = await client.getDevDetailsForIssue('1');
 
-    expect(axios.post).toHaveBeenCalledWith(
-      'https://coveord.atlassian.net/jsw/graphql?operation=DevDetailsDialog',
-      expect.objectContaining(data),
-      expect.anything())
-  }) 
+      expect(details).toEqual({ instanceTypes: [] })
+    })
+  })
 
   describe('#getUsers', () => {
     function buildActiveUsers(num: number) {
