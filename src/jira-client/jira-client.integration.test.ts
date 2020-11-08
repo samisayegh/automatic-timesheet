@@ -19,9 +19,9 @@ it('#getWorkLogs returns a valid response with issues', async () => {
 
 it('#getIssuesInProgress returns a valid response with issues', async () => {
   const client = new JiraClient(axios, new JiraCredentialsResolver());
-  const result = await client.getIssuesInProgress(dayjs('2020-10-20').toDate(), dayjs('2020-10-20').toDate());
+  const issues = await client.getIssuesInProgress(dayjs('2020-10-20').toDate(), dayjs('2020-10-20').toDate());
 
-  expect(result.data.issues.length).not.toBe(0);
+  expect(issues.length).not.toBe(0);
 })
 
 // it('#logTime returns undefined', async () => {

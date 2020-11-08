@@ -57,13 +57,24 @@ describe('Jira Client', () => {
     expect(axios.post).toHaveBeenCalledWith(url, data, expect.anything());
   })
 
-  it('#getIssuesInProgress sends a request with correct params', async () => {
-    const client = buildClient()
+  describe('#getIssuesInProgress', () => {
+    it('sends a request with correct params', async () => {
+      const client = buildClient()
+  
+      await client.getIssuesInProgress(dayjs('2020-10-15').toDate(), dayjs('2020-10-20').toDate());
+  
+      expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('Updated >= "2020-10-15 00:00"'), expect.anything())
+      expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('Updated <= "2020-10-27 23:59"'), expect.anything())
+    })
 
-    await client.getIssuesInProgress(dayjs('2020-10-15').toDate(), dayjs('2020-10-20').toDate());
+    it('when the request throws an error, it recovers', async() => {
+      (axios.get as jest.Mock).mockRejectedValue('');
 
-    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('Updated >= "2020-10-15 00:00"'), expect.anything())
-    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('Updated <= "2020-10-27 23:59"'), expect.anything())
+      const client = buildClient()
+      const result = await client.getIssuesInProgress(dayjs('2020-10-15').toDate(), dayjs('2020-10-20').toDate());
+
+      expect(result).toEqual([])
+    })
   })
 
   it('getDevDetailsForIssue sends a request with the correct params', async () => {

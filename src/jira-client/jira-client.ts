@@ -186,7 +186,13 @@ export class JiraClient {
     const url = `https://coveord.atlassian.net/rest/api/2/search?startAt=${startAt}&maxResults=${maxResults}&jql=${jql}`;
     const headers = this.getHeaders();
 
-    return await this.http.get<UserIssueResponse>(url, {headers});
+    try {
+      const response = await this.http.get<UserIssueResponse>(url, {headers});
+      return response.data.issues;
+    } catch (e) {
+      console.log(e);
+      return [];
+    }
   }
 
   private getHeaders() {

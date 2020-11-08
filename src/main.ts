@@ -37,8 +37,8 @@ async function main() {
 }
 
 async function getWorkBetween(start: Date, end: Date, client: JiraClient) {
-  const res = await client.getIssuesInProgress(start, end);
-  const promises = res.data.issues.map(issue => fetchIssueInfo(issue, jiraClient))
+  const issues = await client.getIssuesInProgress(start, end);
+  const promises = issues.map(issue => fetchIssueInfo(issue, jiraClient))
   return await Promise.all(promises);
 }
 
