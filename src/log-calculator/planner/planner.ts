@@ -1,31 +1,39 @@
 import { Worklog, WorklogIssue } from '../../jira-client/jira-client';
 
+
+export enum Summary {
+  NoIssues = 'Warning: no issues found.',
+  Complete = 'Complete: 8h already logged.',
+  AboveLimit = 'Warning: more than 8h are logged.',
+  WillLog = 'Logging time'
+}
+
 export interface Plan {
-  logCommands: LogCommand[],
-  message: string;
+  commands: LogCommand[],
+  message: Summary;
 }
 
 export interface LogCommand {
   issueKey: string,
   seconds: number
 }
+
 const hour = 3600;
 
-// no issues
-// logging x hours
-// already 8 hours logged
-// more than 8 hours logged
-
 export function generatePlan(issueKeys: string[], issuesWithLoggedTime: WorklogIssue[]) {
+  const numOfIssues = issueKeys.length;
   const secondsToLog = calculateSecondsToLog(issuesWithLoggedTime);
-  const issueTimes = calculateTimePerIssue(secondsToLog, issueKeys.length);
+  const issueTimes = calculateTimePerIssue(secondsToLog, numOfIssues);
 
   const commands = issueKeys.map((key, i) => {
     const seconds = issueTimes[i];
     return buildLogCommand(key, seconds)
-  });
+  })
+  .filter(command => command.seconds !== 0);
 
-  return commands.filter(command => command.seconds !== 0);
+  const message = determineMessage(secondsToLog, numOfIssues);
+
+  return {commands, message}
 }
 
 function calculateSecondsToLog(issuesWithLoggedTime: WorklogIssue[]) {
@@ -33,7 +41,7 @@ function calculateSecondsToLog(issuesWithLoggedTime: WorklogIssue[]) {
   const loggedSeconds = issuesWithLoggedTime
   .reduce((total, issue) => total + sumTime(issue.worklogs),0)
   
-  return Math.max(totalSeconds - loggedSeconds, 0);
+  return totalSeconds - loggedSeconds;
 }
 
 function sumTime(worklogs: Worklog[]) {
@@ -41,7 +49,7 @@ function sumTime(worklogs: Worklog[]) {
 }
 
 function calculateTimePerIssue(secondsToLog: number, numOfIssues: number) {
-  let remainingSeconds = secondsToLog;
+  let remainingSeconds = Math.max(secondsToLog, 0);
   const issueTimes = buildZerosArray(numOfIssues);
   let issueIndex = 0;
 
@@ -77,4 +85,20 @@ function getNextIndex(currentIndex: number, arrayLength: number) {
 
 function buildLogCommand(issueKey: string, seconds: number): LogCommand {
   return {issueKey, seconds}
+}
+
+function determineMessage(secondsToLog: number, numOfIssues: number) {
+  if (secondsToLog < 0) {
+    return Summary.AboveLimit;
+  }
+
+  if (secondsToLog === 0) {
+    return Summary.Complete;
+  }
+
+  if (numOfIssues === 0) {
+    return Summary.NoIssues;
+  }
+  
+  return Summary.WillLog;
 }
