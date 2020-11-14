@@ -3,7 +3,6 @@ import { buildIssueInfo } from '../mocks/mock-issue-info';
 import { buildCommit } from '../mocks/mock-commit';
 import { buildLogPlan } from '../mocks/mock-log-plan';
 import { buildLogCommand } from '../mocks/mock-log-command';
-import { buildPlan } from '../mocks/mock-plan';
 import { Summary } from './planner/planner';
 
 describe('log calculator', () => {
@@ -24,9 +23,8 @@ describe('log calculator', () => {
     const result = logCalculator.calculateLogPlan(logDate, [commitsForIssue], []);
 
     const commands =  [buildLogCommand({issueKey, seconds: 8 * 3600})];
-    const plan = buildPlan({commands, message: Summary.WillLog });
-
-    expect(result).toEqual(buildLogPlan({logDate, plan}))
+    
+    expect(result).toEqual(buildLogPlan({logDate, commands, message: Summary.WillLog}))
   });
 
   it('#calculateLogPlan should not produce the correct plan for an issue not having a commit on the log date', () => {
@@ -36,8 +34,7 @@ describe('log calculator', () => {
     
     const logDate = new Date('2020-01-02');
     const result = logCalculator.calculateLogPlan(logDate, [commitsForIssue], []);
-    const plan = buildPlan({ message: Summary.NoIssues});
 
-    expect(result).toEqual(buildLogPlan({logDate, plan}))
+    expect(result).toEqual(buildLogPlan({logDate, commands: [], message: Summary.NoIssues}))
   });
 });

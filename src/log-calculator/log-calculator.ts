@@ -4,9 +4,8 @@ import { generatePlan, Plan } from './planner/planner';
 import { getActiveIssueKeysForDate } from './work-filter/work-filter';
 import { getWorklogIssuesForDate } from './work-log-filter/work-log-filter';
 
-export interface LogPlan {
+export interface LogPlan extends Plan {
   logDate: Date;
-  plan: Plan;
 }
 
 export class LogCalculator {
@@ -15,6 +14,6 @@ export class LogCalculator {
     const issuesWithLoggedTime = getWorklogIssuesForDate(logDate, worklogIssues);
     const plan = generatePlan(issueKeys, issuesWithLoggedTime);
 
-    return { logDate, plan }
+    return { logDate, ...plan }
   }
 }

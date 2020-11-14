@@ -1,10 +1,11 @@
 import { LogPlan } from '../log-calculator/log-calculator';
-import { buildPlan } from './mock-plan';
+import { Summary } from '../log-calculator/planner/planner';
 
 export function buildLogPlan(config: Partial<LogPlan> = {}): LogPlan {
   return {
     logDate: new Date('2020-01-01'),
-    plan: buildPlan(),
+    commands: [],
+    message: Summary.NoIssues,
     ...config
   }
 }

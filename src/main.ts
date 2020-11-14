@@ -29,7 +29,7 @@ async function main() {
     const calculator = new LogCalculator();
     const plan = calculator.calculateLogPlan(targetDate, work, worklogs);
     
-    console.log('Logging time for:', dateString)
+    console.log(`${dateString} - ${plan.message}`)
     await executeLoggingPlan(plan, jiraClient);
   })
 
@@ -53,9 +53,9 @@ async function fetchIssueInfo(issue: Issue, client: JiraClient): Promise<IssueIn
 
 
 async function executeLoggingPlan(plan: LogPlan, client: JiraClient) {
-  const {logDate, logCommands} = plan;
+  const {logDate, commands} = plan;
 
-  const instructions: LogTimeProps[] = logCommands.map(command => {
+  const instructions: LogTimeProps[] = commands.map(command => {
     const {issueKey, seconds} = command;
     return {issueKey, seconds, utc: logDate}
   })
