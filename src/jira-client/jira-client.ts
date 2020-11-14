@@ -236,6 +236,6 @@ function logError(e: unknown) {
   console.log(e);
 }
 
-function isAxiosError(e: any): e is AxiosError {
-  return 'isAxiosError' in e;
+function isAxiosError(e: unknown): e is AxiosError {
+  return e && typeof e === 'object' && 'isAxiosError' in e;
 } 

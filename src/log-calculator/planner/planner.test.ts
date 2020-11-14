@@ -1,11 +1,11 @@
 import { buildLogCommand } from '../../mocks/mock-log-command';
 import { buildWorklog } from '../../mocks/mock-worklog';
 import { buildWorklogIssue } from '../../mocks/mock-worklog-issue';
-import { generateLogCommands } from "./planner";
+import { generatePlan } from "./planner";
 
-describe('#generateLogCommands', () => {
+describe('#generatePlan', () => {
   it(`when there are no issues, it returns an empty array`, () => {
-    const result = generateLogCommands([], []);
+    const result = generatePlan([], []);
     expect(result).toEqual([])
   })
   
@@ -14,7 +14,7 @@ describe('#generateLogCommands', () => {
     const worklogs = [buildWorklog({timeSpentSeconds: 8 * 3600})]
     const issuesWithLoggedTime = [buildWorklogIssue({worklogs})];
 
-    const result = generateLogCommands(['A'], issuesWithLoggedTime);
+    const result = generatePlan(['A'], issuesWithLoggedTime);
     expect(result).toEqual([])
   })
 
@@ -23,7 +23,7 @@ describe('#generateLogCommands', () => {
     const worklogs = [buildWorklog({timeSpentSeconds: 7.5 * 3600})]
     const issuesWithLoggedTime = [buildWorklogIssue({worklogs})];
 
-    const result = generateLogCommands(['A'], issuesWithLoggedTime);
+    const result = generatePlan(['A'], issuesWithLoggedTime);
     const command = buildLogCommand({issueKey: 'A', seconds: 30 * 60})
     expect(result).toEqual([command])
   })
@@ -33,13 +33,13 @@ describe('#generateLogCommands', () => {
     const worklogs = [buildWorklog({timeSpentSeconds: 9 * 3600})]
     const issuesWithLoggedTime = [buildWorklogIssue({worklogs})];
 
-    const result = generateLogCommands(['A'], issuesWithLoggedTime);
+    const result = generatePlan(['A'], issuesWithLoggedTime);
     expect(result).toEqual([])
   })
 
   it(`when there is one issue, and no issues with logged time,
   it allocates 8 hours to the issue`, () => {
-    const result = generateLogCommands(['A'], []);
+    const result = generatePlan(['A'], []);
 
     const command = buildLogCommand({issueKey: 'A', seconds: 8 * 3600})
     expect(result).toEqual([command])
@@ -47,7 +47,7 @@ describe('#generateLogCommands', () => {
 
   it(`when there are two issues, and no issues with logged time,
   it allocates 4 hours to each issue`, () => {
-    const result = generateLogCommands(['A', 'B'], []);
+    const result = generatePlan(['A', 'B'], []);
 
     const command1 = buildLogCommand({issueKey: 'A', seconds: 4 * 3600});
     const command2 = buildLogCommand({issueKey: 'B', seconds: 4 * 3600});
@@ -57,7 +57,7 @@ describe('#generateLogCommands', () => {
 
   it(`when there are three issues, and no issues with logged time,
   it allocates 3, 3, 2 hours to each issue`, () => {
-    const result = generateLogCommands(['A', 'B', 'C'], []);
+    const result = generatePlan(['A', 'B', 'C'], []);
 
     const command1 = buildLogCommand({issueKey: 'A', seconds: 3 * 3600});
     const command2 = buildLogCommand({issueKey: 'B', seconds: 3 * 3600});
@@ -68,7 +68,7 @@ describe('#generateLogCommands', () => {
 
   it(`when there are five issues, and no issues with logged time,
   it allocates 2,2,2,1,1 hours to each issue`, () => {
-    const result = generateLogCommands(['A', 'B', 'C', 'D', 'E'], []);
+    const result = generatePlan(['A', 'B', 'C', 'D', 'E'], []);
 
     const command1 = buildLogCommand({issueKey: 'A', seconds: 2 * 3600});
     const command2 = buildLogCommand({issueKey: 'B', seconds: 2 * 3600});
@@ -81,7 +81,7 @@ describe('#generateLogCommands', () => {
 
   it(`when there are six issues, and no issues with logged time,
   it allocates 2,2,1,1,1,1 hours to each issue`, () => {
-    const result = generateLogCommands(['A', 'B', 'C', 'D', 'E', 'F'], []);
+    const result = generatePlan(['A', 'B', 'C', 'D', 'E', 'F'], []);
 
     const command1 = buildLogCommand({issueKey: 'A', seconds: 2 * 3600});
     const command2 = buildLogCommand({issueKey: 'B', seconds: 2 * 3600});
@@ -105,7 +105,7 @@ describe('#generateLogCommands', () => {
     const worklogs = [buildWorklog({timeSpentSeconds: 2 * 3600})]
     const issuesWithLoggedTime = [buildWorklogIssue({worklogs})];
 
-    const result = generateLogCommands(['A', 'B', 'C', 'D'], issuesWithLoggedTime);
+    const result = generatePlan(['A', 'B', 'C', 'D'], issuesWithLoggedTime);
 
     const command1 = buildLogCommand({issueKey: 'A', seconds: 2 * 3600});
     const command2 = buildLogCommand({issueKey: 'B', seconds: 2 * 3600});

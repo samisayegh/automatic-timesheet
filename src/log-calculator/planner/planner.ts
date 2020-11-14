@@ -1,12 +1,22 @@
 import { Worklog, WorklogIssue } from '../../jira-client/jira-client';
 
+export interface Plan {
+  logCommands: LogCommand[],
+  message: string;
+}
+
 export interface LogCommand {
   issueKey: string,
   seconds: number
 }
 const hour = 3600;
 
-export function generateLogCommands(issueKeys: string[], issuesWithLoggedTime: WorklogIssue[]) {
+// no issues
+// logging x hours
+// already 8 hours logged
+// more than 8 hours logged
+
+export function generatePlan(issueKeys: string[], issuesWithLoggedTime: WorklogIssue[]) {
   const secondsToLog = calculateSecondsToLog(issuesWithLoggedTime);
   const issueTimes = calculateTimePerIssue(secondsToLog, issueKeys.length);
 
@@ -20,10 +30,10 @@ export function generateLogCommands(issueKeys: string[], issuesWithLoggedTime: W
 
 function calculateSecondsToLog(issuesWithLoggedTime: WorklogIssue[]) {
   const totalSeconds = 8 * hour;
-  const totalLoggedSeconds = issuesWithLoggedTime
+  const loggedSeconds = issuesWithLoggedTime
   .reduce((total, issue) => total + sumTime(issue.worklogs),0)
   
-  return Math.max(totalSeconds - totalLoggedSeconds, 0);
+  return Math.max(totalSeconds - loggedSeconds, 0);
 }
 
 function sumTime(worklogs: Worklog[]) {
